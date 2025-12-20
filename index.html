@@ -1,41 +1,129 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkillSpark Hub</title>
-    <link rel="stylesheet" href="Defaults.css">
-    <style>
-        body { font-family: Arial, sans-serif; direction: rtl; margin: 20px; background: #f9f9f9; }
-        h1, h2, h3 { color: #2c3e50; }
-        p { margin: 10px 0; }
-        .feature { background: #ecf0f1; padding: 10px; margin: 5px 0; border-radius: 5px; }
-        a { color: #2980b9; text-decoration: none; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillSpark Hub</title>
+
+  <!-- ملف التنسيق -->
+  <link rel="stylesheet" href="defaults.css">
 </head>
 <body>
+
+  <!-- الهيدر -->
+  <header>
     <h1>📚 مركز سكيل سبارك</h1>
-    <p><strong>SkillSpark Hub</strong> هي منصة تعليمية مبنية داخل <strong>Pi App Studio</strong>.</p>
+    <p>منصة تعليمية ذكية مبنية داخل Pi App Studio</p>
+  </header>
 
+  <!-- قسم المميزات -->
+  <section class="section">
     <h2>🚀 المميزات</h2>
-    <div class="feature">📖 التعليم الإسلامي: القرآن والسنة فقط (لا ديانات أخرى).</div>
-    <div class="feature">💻 المهارات الرقمية: البرمجة، التصميم، برامج مايكروسوفت أوفيس، إلخ.</div>
-    <div class="feature">🧪 العلوم: الفيزياء، الكيمياء، الأحياء، علم الفلك.</div>
-    <div class="feature">🛠️ الحرف والمهن: مهارات عملية ومهنية.</div>
-    <div class="feature">🌍 المجتمع: شارك المعرفة واربح من خلال نموذج عادل لتقاسم الأرباح.</div>
-    <div class="feature">🤖 دمج الذكاء الاصطناعي: يساعد على تحسين المحتوى ويقترح تحسينات.</div>
-    <div class="feature">💰 تحقيق الدخل: يمكن للمستخدمين إنشاء محتوى مدفوع، ويسمح التطبيق بالإعلانات (متوافق مع الشريعة الإسلامية).</div>
 
-    <h2>🛠️ مجموعة الأدوات التقنية</h2>
-    <p>الواجهة الأمامية: React (create-react-app)<br>
-       الواجهة الخلفية: Node.js + Express<br>
-       قاعدة البيانات: MongoDB / Firebase (دعم مستقبلي)<br>
-       التكامل: Pi SDK + معاملات Pi فقط
-    </p>
+    <div class="cards">
+      <div class="card">
+        <h3>📖 التعليم الإسلامي</h3>
+        <p>
+          تعليم قائم على القرآن الكريم والسنة النبوية فقط،
+          بدون أي محتوى مخالف.
+        </p>
+      </div>
 
-    <h2>🔗 روابط</h2>
-    <p>🌐 نطاق التطبيق: <a href="https://skillsparkhub.pi">https://skillsparkhub.pi</a><br>
-       🧪 رابط التطوير: <a href="https://skillsparkhub.dev">https://skillsparkhub.dev</a>
-    </p>
+      <div class="card">
+        <h3>💻 المهارات الرقمية</h3>
+        <p>
+          برمجة، تصميم، أوفيس، مهارات تقنية حديثة
+          تناسب سوق العمل.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🧪 العلوم</h3>
+        <p>
+          الفيزياء، الكيمياء، الأحياء، علم الفلك
+          بطريقة مبسطة وسهلة.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🛠️ الحرف والمهن</h3>
+        <p>
+          مهارات عملية ومهنية تساعد على التعلم
+          والدخول لسوق العمل.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🤖 الذكاء الاصطناعي</h3>
+        <p>
+          تحسين المحتوى التعليمي واقتراح مسارات تعلم
+          ذكية لكل مستخدم.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>💰 تحقيق الدخل</h3>
+        <p>
+          إنشاء محتوى مدفوع وإعلانات داخل التطبيق
+          بما يتوافق مع الشريعة الإسلامية.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- القسم التقني -->
+  <section class="section">
+    <h2>🛠️ الأدوات التقنية</h2>
+
+    <div class="cards">
+      <div class="card">
+        <h3>الواجهة الأمامية</h3>
+        <p>React (create-react-app)</p>
+      </div>
+
+      <div class="card">
+        <h3>الواجهة الخلفية</h3>
+        <p>Node.js + Express</p>
+      </div>
+
+      <div class="card">
+        <h3>قاعدة البيانات</h3>
+        <p>MongoDB / Firebase (دعم مستقبلي)</p>
+      </div>
+
+      <div class="card">
+        <h3>التكامل</h3>
+        <p>Pi SDK + معاملات Pi فقط</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- الروابط -->
+  <section class="section">
+    <h2>🔗 الروابط</h2>
+
+    <div class="cards">
+      <div class="card">
+        <h3>🌐 نطاق التطبيق</h3>
+        <a class="btn" href="https://skillsparkhub.pi" target="_blank">
+          فتح التطبيق
+        </a>
+      </div>
+
+      <div class="card">
+        <h3>🧪 رابط التطوير</h3>
+        <a class="btn" href="https://skillsparkhub.dev" target="_blank">
+          بيئة التطوير
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- الفوتر -->
+  <footer>
+    © 2025 SkillSpark Hub – Built for Pi Network
+  </footer>
+
 </body>
 </html>
+
