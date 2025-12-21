@@ -23,7 +23,6 @@
       <p>إدارة التفسيرات، الأحاديث، الفقه وعلوم القرآن.</p>
       <button class="accordion-btn">التفسير</button>
       <div class="accordion-content"><p>إضافة/تعديل سور وآيات</p></div>
-
       <button class="accordion-btn">الأحاديث</button>
       <div class="accordion-content"><p>إضافة/تعديل مصادر الأحاديث</p></div>
     </div>
@@ -35,6 +34,53 @@
 
     <button class="accordion-btn">🧪 العلوم</button>
     <div class="accordion-content">
+      <p>إضافة أو تعديل محتوى الفيزياء، الكيمياء، الأحياء والفلك.</p>
+    </div>
+
+    <button class="accordion-btn">🌍 تعلم اللغات</button>
+    <div class="accordion-content">
+      <p>إدارة الدروس، المحادثات، ومصادر تعليم اللغات.</p>
+    </div>
+
+    <button class="accordion-btn">🎥 الفيديوهات التعليمية</button>
+    <div class="accordion-content">
+      <p>كل الفيديوهات التعليمية لكل المهارات.</p>
+    </div>
+
+    <button class="accordion-btn">🛍️ المتجر</button>
+    <div class="accordion-content">
+      <p>إضافة منتجات، إدارة الطلبات، العروض والخصومات.</p>
+    </div>
+
+    <button class="accordion-btn">💍 الجواز الحلال</button>
+    <div class="accordion-content">
+      <p>إدارة الملفات والمطابقات الشرعية للمستخدمين.</p>
+    </div>
+  </section>
+
+  <!-- الفوتر -->
+  <footer>
+    © 2025 SkillSpark Hub – لوحة التحكم
+  </footer>
+
+  <!-- JS للأكوردين -->
+  <script>
+    const accBtns = document.querySelectorAll('.accordion-btn');
+    accBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        const content = btn.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>    <div class="accordion-content">
       <p>إضافة أو تعديل محتوى الفيزياء، الكيمياء، الأحياء والفلك.</p>
     </div>
 
