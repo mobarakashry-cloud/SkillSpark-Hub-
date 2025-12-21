@@ -118,4 +118,88 @@ footer {
   .cards {
     grid-template-columns: repeat(3, 1fr);
   }
+}}
+
+.section h2 {
+  color: #6A1B9A;
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+/* Cards */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+  margin-top: 0;
+  color: #1565C0;
+}
+
+.card p {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background-color: #2E7D32;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* Accordion */
+.accordion-btn {
+  background-color: #6A1B9A;
+  color: white;
+  padding: 12px;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  margin-top: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: right;
+}
+
+.accordion-btn.active {
+  background-color: #1565C0;
+}
+
+.accordion-content {
+  display: none;
+  background-color: #f1f1f1;
+  padding: 10px 15px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+/* Footer */
+footer {
+  background-color: #212121;
+  color: #ccc;
+  text-align: center;
+  padding: 15px;
+  font-size: 13px;
+}
+
+/* Desktop */
+@media (min-width: 768px) {
+  .cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
