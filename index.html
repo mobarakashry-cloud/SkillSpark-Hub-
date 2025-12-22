@@ -5,15 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillSpark Hub</title>
   <link rel="stylesheet" href="defaults.css">
+  
   <!-- Pi SDK -->
   <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
+
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
+    header, footer { text-align:center; background:#4a148c; color:white; padding:15px 10px; }
+    h1,h2,h3 { margin:10px 0; }
+    .section { padding:20px; max-width:1200px; margin:auto; }
+    .cards { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; }
+    .card { background:white; border-radius:10px; padding:15px; width:220px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+    .btn { display:inline-block; margin-top:10px; padding:8px 12px; background:#4a148c; color:white; border-radius:5px; text-decoration:none; }
+    .accordion-btn { cursor:pointer; padding:10px; width:100%; border:none; text-align:right; outline:none; font-size:16px; transition:0.3s; margin-top:5px; background:#ddd; border-radius:5px; }
+    .accordion-btn.active { background:#4a148c; color:white; }
+    .accordion-content { max-height:0; overflow:hidden; transition:max-height 0.3s ease; padding-left:10px; background:#eee; margin-bottom:5px; border-radius:5px; }
+    #fileUpload, #videoUpload { margin-top:10px; }
+    .login-btn, .logout-btn { padding:8px 12px; margin:5px; border:none; border-radius:5px; cursor:pointer; color:white; }
+    .login-btn { background:#4a148c; }
+    .logout-btn { background:#b71c1c; }
+    .status { margin-top:10px; font-weight:bold; }
+  </style>
 </head>
 <body>
 
   <!-- الهيدر -->
   <header>
     <h1>📚 مركز سكيل سبارك</h1>
-    <p>منصة تعليمية ذكية مبنية داخل Pi App Studio</p>
+    <p>منصة تعليمية ذكية مبنية داخل Pi App Studio – هدفها إفادة المجتمع وتحقيق الربح المشروع</p>
+    <button class="login-btn" id="loginBtn">تسجيل الدخول بـ Pi</button>
+    <button class="logout-btn" id="logoutBtn" style="display:none;">تسجيل الخروج</button>
+    <div class="status" id="loginStatus">غير مسجل</div>
   </header>
 
   <!-- قسم المميزات -->
@@ -32,7 +54,6 @@
   <!-- الأقسام والفروع -->
   <section class="section">
     <h2>📂 الأقسام والفروع</h2>
-
     <button class="accordion-btn">📖 التعليم الديني</button>
     <div class="accordion-content">
       <p>تفسير، أحاديث، فقه، علوم القرآن.</p>
@@ -61,17 +82,22 @@
     </div>
 
     <button class="accordion-btn">🌍 تعلم اللغات</button>
-    <div class="accordion-content">
-      <p>إنجليزي، فرنسي، إسباني، صيني</p>
-    </div>
+    <div class="accordion-content"><p>إنجليزي، فرنسي، إسباني، صيني</p></div>
 
     <button class="accordion-btn">💍 الجواز الحلال</button>
-    <div class="accordion-content">
-      <p>شروط موثقة وبيانات دقيقة لضمان الزواج الشرعي.</p>
-    </div>
+    <div class="accordion-content"><p>شروط موثقة وبيانات دقيقة لضمان الزواج الشرعي.</p></div>
   </section>
 
-  <!-- القسم التقني -->
+  <!-- رفع الملفات -->
+  <section class="section">
+    <h2>📤 رفع ملفات المستخدم</h2>
+    <input type="file" id="fileUpload" accept="image/*" />
+    <input type="file" id="videoUpload" accept="video/*" />
+    <button class="btn" id="uploadBtn">رفع الملفات</button>
+    <div id="uploadStatus"></div>
+  </section>
+
+  <!-- الأدوات التقنية -->
   <section class="section">
     <h2>🛠️ الأدوات التقنية</h2>
     <div class="cards">
@@ -94,30 +120,75 @@
   <!-- الفوتر -->
   <footer>© 2025 SkillSpark Hub – Built for Pi Network</footer>
 
-  <!-- JS للأكوردين -->
   <script>
+    // Accordion
     document.querySelectorAll('.accordion-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         btn.classList.toggle('active');
         const content = btn.nextElementSibling;
         if (!content) return;
-
-        if (content.classList.contains('open')) {
+        if (content.style.maxHeight) {
           content.style.maxHeight = null;
-          content.classList.remove('open');
         } else {
           content.style.maxHeight = content.scrollHeight + "px";
-          content.classList.add('open');
         }
       });
     });
 
-    // Pi SDK initialization example
-    if (window.Pi) {
-      Pi.init({ appName: 'SkillSpark Hub' }).then(() => {
-        console.log('Pi SDK initialized!');
-      }).catch(err => console.error('Pi SDK error:', err));
+    // Pi SDK Login/Logout
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginStatus = document.getElementById('loginStatus');
+
+    async function loginPi() {
+      if (!window.Pi) return alert('Pi SDK غير متاح!');
+      try {
+        const user = await Pi.request('getCurrentUser');
+        if (user) {
+          loginStatus.innerText = 'مسجل: ' + (user.username || 'Pi User');
+          loginBtn.style.display = 'none';
+          logoutBtn.style.display = 'inline-block';
+          console.log('User logged in', user);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('فشل تسجيل الدخول!');
+      }
     }
+
+    async function logoutPi() {
+      loginStatus.innerText = 'غير مسجل';
+      loginBtn.style.display = 'inline-block';
+      logoutBtn.style.display = 'none';
+      console.log('User logged out');
+    }
+
+    loginBtn.addEventListener('click', loginPi);
+    logoutBtn.addEventListener('click', logoutPi);
+
+    // File Upload Placeholder
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileUpload');
+    const videoInput = document.getElementById('videoUpload');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    uploadBtn.addEventListener('click', () => {
+      if (fileInput.files.length === 0 && videoInput.files.length === 0) {
+        uploadStatus.innerText = 'اختر ملف صورة أو فيديو أولاً';
+        return;
+      }
+      // هنا يمكن ربط Firebase أو أي backend لاحقًا
+      uploadStatus.innerText = 'تم رفع الملفات بنجاح (محلياً الآن)';
+      console.log('Files selected:', fileInput.files, videoInput.files);
+    });
+
+    // Pi SDK Initialization for Sandbox/Development
+    if (window.Pi) {
+      Pi.init({ appName: 'SkillSpark Hub', sandbox: true })
+        .then(() => console.log('Pi SDK initialized in Sandbox!'))
+        .catch(err => console.error('Pi SDK error:', err));
+    }
+
   </script>
 
 </body>
