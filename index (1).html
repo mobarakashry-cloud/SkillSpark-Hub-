@@ -1,217 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkillSpark Hub</title>
-  <link rel="stylesheet" href="defaults.css">
-</head>
-<body>
-
-  <!-- الهيدر -->
-  <header>
-    <h1>📚 مركز سكيل سبارك</h1>
-    <p>منصة تعليمية ذكية مبنية داخل Pi App Studio</p>
-  </header>
-
-  <!-- قسم المميزات -->
-  <section class="section">
-    <h2>🚀 المميزات</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>📖 التعليم الإسلامي</h3>
-        <p>تعليم قائم على القرآن الكريم والسنة النبوية فقط، بدون أي محتوى مخالف.</p>
-      </div>
-      <div class="card">
-        <h3>💻 المهارات الرقمية</h3>
-        <p>برمجة، تصميم، أوفيس، مهارات تقنية حديثة تناسب سوق العمل.</p>
-      </div>
-      <div class="card">
-        <h3>🧪 العلوم</h3>
-        <p>الفيزياء، الكيمياء، الأحياء، علم الفلك بطريقة مبسطة وسهلة.</p>
-      </div>
-      <div class="card">
-        <h3>🛠️ الحرف والمهن</h3>
-        <p>مهارات عملية ومهنية تساعد على التعلم والدخول لسوق العمل.</p>
-      </div>
-      <div class="card">
-        <h3>🤖 الذكاء الاصطناعي</h3>
-        <p>تحسين المحتوى التعليمي واقتراح مسارات تعلم ذكية لكل مستخدم.</p>
-      </div>
-      <div class="card">
-        <h3>💰 تحقيق الدخل</h3>
-        <p>إنشاء محتوى مدفوع وإعلانات داخل التطبيق بما يتوافق مع الشريعة الإسلامية.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- الأقسام مع الفروع (Accordion) -->
-  <section class="section">
-    <h2>📂 الأقسام والفروع</h2>
-
-    <button class="accordion-btn">📖 التعليم الديني</button>
-    <div class="accordion-content">
-      <p>تفسير، أحاديث، فقه، علوم القرآن.</p>
-      <button class="accordion-btn">التفسير</button>
-      <div class="accordion-content"><p>سورة البقرة، آل عمران، إلخ</p></div>
-
-      <button class="accordion-btn">الأحاديث</button>
-      <div class="accordion-content"><p>صحيح البخاري، صحيح مسلم، إلخ</p></div>
-    </div>
-
-    <button class="accordion-btn">💻 المهارات الرقمية</button>
-    <div class="accordion-content">
-      <p>برمجة، تصميم، Office، تطوير تطبيقات.</p>
-    </div>
-
-    <button class="accordion-btn">🧪 العلوم</button>
-    <div class="accordion-content">
-      <p>فيزياء، كيمياء، أحياء، فلك.</p>
-    </div>
-
-    <button class="accordion-btn">🌍 تعلم اللغات</button>
-    <div class="accordion-content">
-      <p>إنجليزي، فرنسي، إسباني، صيني.</p>
-    </div>
-  </section>
-
-  <!-- القسم التقني -->
-  <section class="section">
-    <h2>🛠️ الأدوات التقنية</h2>
-    <div class="cards">
-      <div class="card"><h3>الواجهة الأمامية</h3><p>React (create-react-app)</p></div>
-      <div class="card"><h3>الواجهة الخلفية</h3><p>Node.js + Express</p></div>
-      <div class="card"><h3>قاعدة البيانات</h3><p>MongoDB / Firebase (دعم مستقبلي)</p></div>
-      <div class="card"><h3>التكامل</h3><p>Pi SDK + معاملات Pi فقط</p></div>
-    </div>
-  </section>
-
-  <!-- الروابط -->
-  <section class="section">
-    <h2>🔗 الروابط</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>🌐 نطاق التطبيق</h3>
-        <a class="btn" href="https://skillsparkhub.pi" target="_blank">فتح التطبيق</a>
-      </div>
-      <div class="card">
-        <h3>🧪 رابط التطوير</h3>
-        <a class="btn" href="https://skillsparkhub.dev" target="_blank">بيئة التطوير</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- الفوتر -->
-  <footer>
-    © 2025 SkillSpark Hub – Built for Pi Network
-  </footer>
-
-  <!-- JS للأكوردين -->
-  <script>
-    const accBtns = document.querySelectorAll('.accordion-btn');
-    accBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        const content = btn.nextElementSibling;
-        if (content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = "block";
-        }
-      });
-    });
-  </script>
-
-</body>
-</html>      <div class="card"><h3>🤖 الذكاء الاصطناعي</h3><p>تحسين المحتوى التعليمي واقتراح مسارات تعلم ذكية لكل مستخدم.</p></div>
-      <div class="card"><h3>💰 تحقيق الدخل</h3><p>إنشاء محتوى مدفوع وإعلانات داخل التطبيق بما يتوافق مع الشريعة الإسلامية.</p></div>
-    </div>
-  </section>
-
-  <!-- الأقسام مع الفروع (Accordion) -->
-  <section class="section">
-    <h2>📂 الأقسام والفروع</h2>
-
-    <button class="accordion-btn">📖 التعليم الديني</button>
-    <div class="accordion-content">
-      <p>تفسير، أحاديث، فقه، علوم القرآن.</p>
-      <button class="accordion-btn">التفسير</button>
-      <div class="accordion-content"><p>سورة البقرة، آل عمران، إلخ</p></div>
-      <button class="accordion-btn">الأحاديث</button>
-      <div class="accordion-content"><p>صحيح البخاري، صحيح مسلم، إلخ</p></div>
-    </div>
-
-    <button class="accordion-btn">💻 المهارات الرقمية</button>
-    <div class="accordion-content">
-      <p>برمجة، تصميم، Office، تطوير تطبيقات، مواقع مربحة</p>
-      <button class="accordion-btn">React & Native</button>
-      <div class="accordion-content"><p>تطوير تطبيقات React Native</p></div>
-      <button class="accordion-btn">Fiverr & Upwork</button>
-      <div class="accordion-content"><p>منصات العمل الحر الحلال</p></div>
-    </div>
-
-    <button class="accordion-btn">🧪 العلوم</button>
-    <div class="accordion-content">
-      <p>فيزياء، كيمياء، أحياء، فلك</p>
-      <button class="accordion-btn">الفيزياء</button>
-      <div class="accordion-content"><p>ميكانيكا، كهرباء، ضوء</p></div>
-      <button class="accordion-btn">الكيمياء</button>
-      <div class="accordion-content"><p>عضوية، غير عضوية، تحليلية</p></div>
-    </div>
-
-    <button class="accordion-btn">🌍 تعلم اللغات</button>
-    <div class="accordion-content">
-      <p>إنجليزي، فرنسي، إسباني، صيني</p>
-    </div>
-
-    <button class="accordion-btn">💍 الجواز الحلال</button>
-    <div class="accordion-content">
-      <p>شروط موثقة وبيانات دقيقة لضمان الزواج الشرعي.</p>
-    </div>
-  </section>
-
-  <!-- القسم التقني -->
-  <section class="section">
-    <h2>🛠️ الأدوات التقنية</h2>
-    <div class="cards">
-      <div class="card"><h3>الواجهة الأمامية</h3><p>React (create-react-app)</p></div>
-      <div class="card"><h3>الواجهة الخلفية</h3><p>Node.js + Express</p></div>
-      <div class="card"><h3>قاعدة البيانات</h3><p>MongoDB / Firebase (دعم مستقبلي)</p></div>
-      <div class="card"><h3>التكامل</h3><p>Pi SDK + معاملات Pi فقط</p></div>
-    </div>
-  </section>
-
-  <!-- الروابط -->
-  <section class="section">
-    <h2>🔗 الروابط</h2>
-    <div class="cards">
-      <div class="card"><h3>🌐 نطاق التطبيق</h3><a class="btn" href="https://skillsparkhub.pi" target="_blank">فتح التطبيق</a></div>
-      <div class="card"><h3>🧪 رابط التطوير</h3><a class="btn" href="https://skillsparkhub.dev" target="_blank">بيئة التطوير</a></div>
-    </div>
-  </section>
-
-  <!-- الفوتر -->
-  <footer>© 2025 SkillSpark Hub – Built for Pi Network</footer>
-
-  <!-- JS للأكوردين -->
-  <script>
-    document.querySelectorAll('.accordion-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        const content = btn.nextElementSibling;
-        if (!content) return;
-
-        if (content.classList.contains('open')) {
-          content.style.maxHeight = null;
-          content.classList.remove('open');
-        } else {
-          content.style.maxHeight = content.scrollHeight + "px";
-          content.classList.add('open');
-        }
-      });
-    });
-  </script>
-
-</body>
-</html>
-
