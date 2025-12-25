@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillSpark Hub</title>
   <link rel="stylesheet" href="defaults.css">
-  
   <!-- Pi SDK -->
   <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
-
   <style>
     body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
     header, footer { text-align:center; background:#4a148c; color:white; padding:15px 10px; }
@@ -16,7 +14,7 @@
     .section { padding:20px; max-width:1200px; margin:auto; }
     .cards { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; }
     .card { background:white; border-radius:10px; padding:15px; width:220px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    .btn { display:inline-block; margin-top:10px; padding:8px 12px; background:#4a148c; color:white; border-radius:5px; text-decoration:none; }
+    .btn { display:inline-block; margin-top:10px; padding:8px 12px; background:#4a148c; color:white; border-radius:5px; text-decoration:none; cursor:pointer; }
     .accordion-btn { cursor:pointer; padding:10px; width:100%; border:none; text-align:right; outline:none; font-size:16px; transition:0.3s; margin-top:5px; background:#ddd; border-radius:5px; }
     .accordion-btn.active { background:#4a148c; color:white; }
     .accordion-content { max-height:0; overflow:hidden; transition:max-height 0.3s ease; padding-left:10px; background:#eee; margin-bottom:5px; border-radius:5px; }
@@ -52,9 +50,9 @@
   </section>
 
   <!-- الأقسام والفروع -->
-  <section class="section">
+  <section class="section" id="sectionsContainer">
     <h2>📂 الأقسام والفروع</h2>
-    <div class="section-sections"></div> <!-- سيتم ملؤها ديناميكياً من data.json -->
+    <!-- سيتم ملء الأقسام هنا من data.json -->
   </section>
 
   <!-- رفع الملفات -->
@@ -89,8 +87,52 @@
   <!-- الفوتر -->
   <footer>© 2025 SkillSpark Hub – Built for Pi Network</footer>
 
-  <!-- السكريبت -->
   <script>
+    // تحميل البيانات من data.json
+    fetch('data.json')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('sectionsContainer');
+        data.sections.forEach(section => {
+          const btn = document.createElement('button');
+          btn.className = 'accordion-btn';
+          btn.innerText = section.name;
+          container.appendChild(btn);
+
+          const content = document.createElement('div');
+          content.className = 'accordion-content';
+          content.innerHTML = section.description || '';
+          container.appendChild(content);
+
+          // الفروع
+          section.branches.forEach(branch => {
+            const branchBtn = document.createElement('button');
+            branchBtn.className = 'accordion-btn';
+            branchBtn.innerText = branch.name;
+            content.appendChild(branchBtn);
+
+            const branchContent = document.createElement('div');
+            branchContent.className = 'accordion-content';
+            branchContent.innerText = branch.description || '';
+            content.appendChild(branchContent);
+          });
+        });
+
+        // إضافة أحداث الأكوردين
+        document.querySelectorAll('.accordion-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            const content = btn.nextElementSibling;
+            if (!content) return;
+            if (content.style.maxHeight) {
+              content.style.maxHeight = null;
+            } else {
+              content.style.maxHeight = content.scrollHeight + "px";
+            }
+          });
+        });
+      });
+
     // Pi SDK Login/Logout
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -137,76 +179,13 @@
       console.log('Files selected:', fileInput.files, videoInput.files);
     });
 
-    // Accordion & Load Sections from JSON
-    async function loadSections() {
-      const response = await fetch('data.json');
-      const data = await response.json();
-
-      const container = document.querySelector('.section-sections');
-      container.innerHTML = '';
-
-      for (const [sectionName, sectionInfo] of Object.entries(data)) {
-        const btn = document.createElement('button');
-        btn.className = 'accordion-btn';
-        btn.textContent = sectionName;
-        container.appendChild(btn);
-
-        const content = document.createElement('div');
-        content.className = 'accordion-content';
-
-        if (Array.isArray(sectionInfo['الفروع'])) {
-          sectionInfo['الفروع'].forEach(f => {
-            const p = document.createElement('p');
-            p.textContent = f;
-            content.appendChild(p);
-          });
-        } else {
-          for (const [subName, subItems] of Object.entries(sectionInfo['الفروع'])) {
-            const subBtn = document.createElement('button');
-            subBtn.className = 'accordion-btn';
-            subBtn.textContent = subName;
-            content.appendChild(subBtn);
-
-            const subContent = document.createElement('div');
-            subContent.className = 'accordion-content';
-
-            subItems.forEach(item => {
-              const p = document.createElement('p');
-              p.textContent = item;
-              subContent.appendChild(p);
-            });
-
-            content.appendChild(subContent);
-          }
-        }
-
-        container.appendChild(content);
-      }
-
-      // Accordion functionality
-      document.querySelectorAll('.accordion-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          btn.classList.toggle('active');
-          const content = btn.nextElementSibling;
-          if (!content) return;
-          if (content.style.maxHeight) {
-            content.style.maxHeight = null;
-          } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-          }
-        });
-      });
-    }
-
-    loadSections();
-
     // Pi SDK Initialization
     if (window.Pi) {
       Pi.init({ appName: 'SkillSpark Hub', sandbox: true })
         .then(() => console.log('Pi SDK initialized in Sandbox!'))
         .catch(err => console.error('Pi SDK error:', err));
     }
-  </script>
 
+  </script>
 </body>
 </html>
