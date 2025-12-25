@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillSpark Hub</title>
   <link rel="stylesheet" href="defaults.css">
-  
+
   <!-- Pi SDK -->
   <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
 
@@ -57,28 +57,16 @@
     <button class="accordion-btn">📖 التعليم الديني</button>
     <div class="accordion-content">
       <p>تفسير، أحاديث، فقه، علوم القرآن.</p>
-      <button class="accordion-btn">التفسير</button>
-      <div class="accordion-content"><p>سورة البقرة، آل عمران، إلخ</p></div>
-      <button class="accordion-btn">الأحاديث</button>
-      <div class="accordion-content"><p>صحيح البخاري، صحيح مسلم، إلخ</p></div>
     </div>
 
     <button class="accordion-btn">💻 المهارات الرقمية</button>
     <div class="accordion-content">
       <p>برمجة، تصميم، Office، تطوير تطبيقات، مواقع مربحة</p>
-      <button class="accordion-btn">React & Native</button>
-      <div class="accordion-content"><p>تطوير تطبيقات React Native</p></div>
-      <button class="accordion-btn">Fiverr & Upwork</button>
-      <div class="accordion-content"><p>منصات العمل الحر الحلال</p></div>
     </div>
 
     <button class="accordion-btn">🧪 العلوم</button>
     <div class="accordion-content">
       <p>فيزياء، كيمياء، أحياء، فلك</p>
-      <button class="accordion-btn">الفيزياء</button>
-      <div class="accordion-content"><p>ميكانيكا، كهرباء، ضوء</p></div>
-      <button class="accordion-btn">الكيمياء</button>
-      <div class="accordion-content"><p>عضوية، غير عضوية، تحليلية</p></div>
     </div>
 
     <button class="accordion-btn">🌍 تعلم اللغات</button>
@@ -127,11 +115,8 @@
         btn.classList.toggle('active');
         const content = btn.nextElementSibling;
         if (!content) return;
-        if (content.style.maxHeight) {
-          content.style.maxHeight = null;
-        } else {
-          content.style.maxHeight = content.scrollHeight + "px";
-        }
+        if (content.style.maxHeight) content.style.maxHeight = null;
+        else content.style.maxHeight = content.scrollHeight + "px";
       });
     });
 
@@ -141,8 +126,9 @@
     const loginStatus = document.getElementById('loginStatus');
 
     async function loginPi() {
-      if (!window.Pi) return alert('Pi SDK غير متاح!');
+      if (!window.Pi) return alert('Pi SDK غير متاح! افتح التطبيق من Pi Browser.');
       try {
+        await Pi.init({ appName: 'SkillSpark Hub', sandbox: false });
         const user = await Pi.request('getCurrentUser');
         if (user) {
           loginStatus.innerText = 'مسجل: ' + (user.username || 'Pi User');
@@ -150,9 +136,9 @@
           logoutBtn.style.display = 'inline-block';
           console.log('User logged in', user);
         }
-      } catch (err) {
+      } catch(err) {
         console.error(err);
-        alert('فشل تسجيل الدخول!');
+        alert('فشل تسجيل الدخول! حاول مرة أخرى.');
       }
     }
 
@@ -177,18 +163,9 @@
         uploadStatus.innerText = 'اختر ملف صورة أو فيديو أولاً';
         return;
       }
-      // هنا يمكن ربط Firebase أو أي backend لاحقًا
       uploadStatus.innerText = 'تم رفع الملفات بنجاح (محلياً الآن)';
       console.log('Files selected:', fileInput.files, videoInput.files);
     });
-
-    // Pi SDK Initialization for Sandbox/Development
-    if (window.Pi) {
-      Pi.init({ appName: 'SkillSpark Hub', sandbox: true })
-        .then(() => console.log('Pi SDK initialized in Sandbox!'))
-        .catch(err => console.error('Pi SDK error:', err));
-    }
-
   </script>
 
 </body>
