@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillSpark Hub</title>
   <link rel="stylesheet" href="defaults.css">
-
+  
   <!-- Pi SDK -->
   <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
 
@@ -54,26 +54,7 @@
   <!-- الأقسام والفروع -->
   <section class="section">
     <h2>📂 الأقسام والفروع</h2>
-    <button class="accordion-btn">📖 التعليم الديني</button>
-    <div class="accordion-content">
-      <p>تفسير، أحاديث، فقه، علوم القرآن.</p>
-    </div>
-
-    <button class="accordion-btn">💻 المهارات الرقمية</button>
-    <div class="accordion-content">
-      <p>برمجة، تصميم، Office، تطوير تطبيقات، مواقع مربحة</p>
-    </div>
-
-    <button class="accordion-btn">🧪 العلوم</button>
-    <div class="accordion-content">
-      <p>فيزياء، كيمياء، أحياء، فلك</p>
-    </div>
-
-    <button class="accordion-btn">🌍 تعلم اللغات</button>
-    <div class="accordion-content"><p>إنجليزي، فرنسي، إسباني، صيني</p></div>
-
-    <button class="accordion-btn">💍 الجواز الحلال</button>
-    <div class="accordion-content"><p>شروط موثقة وبيانات دقيقة لضمان الزواج الشرعي.</p></div>
+    <div class="section-sections"></div> <!-- سيتم ملؤها ديناميكياً من data.json -->
   </section>
 
   <!-- رفع الملفات -->
@@ -108,27 +89,16 @@
   <!-- الفوتر -->
   <footer>© 2025 SkillSpark Hub – Built for Pi Network</footer>
 
+  <!-- السكريبت -->
   <script>
-    // Accordion
-    document.querySelectorAll('.accordion-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        const content = btn.nextElementSibling;
-        if (!content) return;
-        if (content.style.maxHeight) content.style.maxHeight = null;
-        else content.style.maxHeight = content.scrollHeight + "px";
-      });
-    });
-
     // Pi SDK Login/Logout
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginStatus = document.getElementById('loginStatus');
 
     async function loginPi() {
-      if (!window.Pi) return alert('Pi SDK غير متاح! افتح التطبيق من Pi Browser.');
+      if (!window.Pi) return alert('Pi SDK غير متاح!');
       try {
-        await Pi.init({ appName: 'SkillSpark Hub', sandbox: false });
         const user = await Pi.request('getCurrentUser');
         if (user) {
           loginStatus.innerText = 'مسجل: ' + (user.username || 'Pi User');
@@ -136,9 +106,9 @@
           logoutBtn.style.display = 'inline-block';
           console.log('User logged in', user);
         }
-      } catch(err) {
+      } catch (err) {
         console.error(err);
-        alert('فشل تسجيل الدخول! حاول مرة أخرى.');
+        alert('فشل تسجيل الدخول!');
       }
     }
 
@@ -166,6 +136,76 @@
       uploadStatus.innerText = 'تم رفع الملفات بنجاح (محلياً الآن)';
       console.log('Files selected:', fileInput.files, videoInput.files);
     });
+
+    // Accordion & Load Sections from JSON
+    async function loadSections() {
+      const response = await fetch('data.json');
+      const data = await response.json();
+
+      const container = document.querySelector('.section-sections');
+      container.innerHTML = '';
+
+      for (const [sectionName, sectionInfo] of Object.entries(data)) {
+        const btn = document.createElement('button');
+        btn.className = 'accordion-btn';
+        btn.textContent = sectionName;
+        container.appendChild(btn);
+
+        const content = document.createElement('div');
+        content.className = 'accordion-content';
+
+        if (Array.isArray(sectionInfo['الفروع'])) {
+          sectionInfo['الفروع'].forEach(f => {
+            const p = document.createElement('p');
+            p.textContent = f;
+            content.appendChild(p);
+          });
+        } else {
+          for (const [subName, subItems] of Object.entries(sectionInfo['الفروع'])) {
+            const subBtn = document.createElement('button');
+            subBtn.className = 'accordion-btn';
+            subBtn.textContent = subName;
+            content.appendChild(subBtn);
+
+            const subContent = document.createElement('div');
+            subContent.className = 'accordion-content';
+
+            subItems.forEach(item => {
+              const p = document.createElement('p');
+              p.textContent = item;
+              subContent.appendChild(p);
+            });
+
+            content.appendChild(subContent);
+          }
+        }
+
+        container.appendChild(content);
+      }
+
+      // Accordion functionality
+      document.querySelectorAll('.accordion-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('active');
+          const content = btn.nextElementSibling;
+          if (!content) return;
+          if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+          } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+          }
+        });
+      });
+    }
+
+    loadSections();
+
+    // Pi SDK Initialization
+    if (window.Pi) {
+      Pi.init({ appName: 'SkillSpark Hub', sandbox: true })
+        .then(() => console.log('Pi SDK initialized in Sandbox!'))
+        .catch(err => console.error('Pi SDK error:', err));
+    }
   </script>
 
 </body>
