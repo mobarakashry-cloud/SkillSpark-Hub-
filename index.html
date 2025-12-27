@@ -16,7 +16,7 @@
     .section { padding:20px; max-width:1200px; margin:auto; }
     .cards { display:flex; flex-wrap:wrap; gap:15px; justify-content:center; }
     .card { background:white; border-radius:10px; padding:15px; width:220px; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
-    .btn { display:inline-block; margin-top:10px; padding:8px 12px; background:#4a148c; color:white; border-radius:5px; text-decoration:none; }
+    .btn { display:inline-block; margin-top:10px; padding:8px 12px; background:#4a148c; color:white; border-radius:5px; text-decoration:none; cursor:pointer; }
     .accordion-btn { cursor:pointer; padding:10px; width:100%; border:none; text-align:right; outline:none; font-size:16px; transition:0.3s; margin-top:5px; background:#ddd; border-radius:5px; }
     .accordion-btn.active { background:#4a148c; color:white; }
     .accordion-content { max-height:0; overflow:hidden; transition:max-height 0.3s ease; padding-left:10px; background:#eee; margin-bottom:5px; border-radius:5px; }
@@ -91,20 +91,6 @@
 
   <!-- جافاسكريبت -->
   <script>
-    // Accordion ثابت للـ HTML القديم
-    document.querySelectorAll('.accordion-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        const content = btn.nextElementSibling;
-        if (!content) return;
-        if (content.style.maxHeight) {
-          content.style.maxHeight = null;
-        } else {
-          content.style.maxHeight = content.scrollHeight + "px";
-        }
-      });
-    });
-
     // Pi SDK Login/Logout
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
@@ -147,12 +133,11 @@
         uploadStatus.innerText = 'اختر ملف صورة أو فيديو أولاً';
         return;
       }
-      // هنا يمكن ربط Firebase أو أي backend لاحقًا
       uploadStatus.innerText = 'تم رفع الملفات بنجاح (محلياً الآن)';
       console.log('Files selected:', fileInput.files, videoInput.files);
     });
 
-    // Pi SDK Initialization for Sandbox/Development
+    // Pi SDK Initialization
     if (window.Pi) {
       Pi.init({ appName: 'SkillSpark Hub', sandbox: true })
         .then(() => console.log('Pi SDK initialized in Sandbox!'))
@@ -161,6 +146,34 @@
 
     // ** تحميل data.json وعرض الأقسام والفروع ديناميكيًا **
     const sectionsContainer = document.querySelector('.sections-container');
+
+    async function createAccordion(name, content, parent) {
+      const btn = document.createElement('button');
+      btn.classList.add('accordion-btn');
+      btn.textContent = name.replace(/_/g,' ');
+      parent.appendChild(btn);
+
+      const div = document.createElement('div');
+      div.classList.add('accordion-content');
+      parent.appendChild(div);
+
+      if (Array.isArray(content)) {
+        content.forEach(item => {
+          const p = document.createElement('p');
+          p.textContent = item;
+          div.appendChild(p);
+        });
+      } else if (typeof content === 'object') {
+        for (const [subName, subContent] of Object.entries(content)) {
+          createAccordion(subName, subContent, div);
+        }
+      }
+
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        div.style.maxHeight = div.style.maxHeight ? null : div.scrollHeight + "px";
+      });
+    }
 
     async function loadSections() {
       try {
@@ -177,59 +190,12 @@
 
           if (sectionData.الفروع) {
             for (const [branchName, subBranches] of Object.entries(sectionData.الفروع)) {
-              const branchBtn = document.createElement('button');
-              branchBtn.classList.add('accordion-btn');
-              branchBtn.textContent = branchName.replace(/_/g,' ');
-              sectionDiv.appendChild(branchBtn);
-
-              const branchContent = document.createElement('div');
-              branchContent.classList.add('accordion-content');
-
-              if (Array.isArray(subBranches)) {
-                subBranches.forEach(item => {
-                  const p = document.createElement('p');
-                  p.textContent = item;
-                  branchContent.appendChild(p);
-                });
-              } else if (typeof subBranches === 'object') {
-                for (const [subName, subItems] of Object.entries(subBranches)) {
-                  const subBtn = document.createElement('button');
-                  subBtn.classList.add('accordion-btn');
-                  subBtn.textContent = subName.replace(/_/g,' ');
-                  branchContent.appendChild(subBtn);
-
-                  const subContent = document.createElement('div');
-                  subContent.classList.add('accordion-content');
-                  subItems.forEach(item => {
-                    const p = document.createElement('p');
-                    p.textContent = item;
-                    subContent.appendChild(p);
-                  });
-
-                  branchContent.appendChild(subContent);
-                }
-              }
-
-              sectionDiv.appendChild(branchContent);
+              createAccordion(branchName, subBranches, sectionDiv);
             }
           }
 
           sectionsContainer.appendChild(sectionDiv);
         }
-
-        document.querySelectorAll('.accordion-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            btn.classList.toggle('active');
-            const content = btn.nextElementSibling;
-            if (!content) return;
-            if (content.style.maxHeight) {
-              content.style.maxHeight = null;
-            } else {
-              content.style.maxHeight = content.scrollHeight + "px";
-            }
-          });
-        });
-
       } catch(err) {
         console.error('خطأ في تحميل data.json:', err);
       }
