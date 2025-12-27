@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SkillSpark Hub Dashboard</title>
   <link rel="stylesheet" href="defaults.css">
+  <!-- استدعاء Pi SDK -->
+  <script src="https://unpkg.com/@pi-network/pi-sdk/dist/pi-sdk.min.js"></script>
 </head>
 <body>
 
@@ -56,6 +58,11 @@
     <div class="accordion-content">
       <p>إدارة الملفات والمطابقات الشرعية للمستخدمين.</p>
     </div>
+
+    <!-- زر دفع Step 10 -->
+    <button id="payBtn">💸 تجربة دفع Pi (Step 10)</button>
+    <p id="paymentStatus"></p>
+
   </section>
 
   <!-- الفوتر -->
@@ -77,113 +84,20 @@
         }
       });
     });
-  </script>
 
-</body>
-</html>    <div class="accordion-content">
-      <p>إضافة أو تعديل محتوى الفيزياء، الكيمياء، الأحياء والفلك.</p>
-    </div>
-
-    <button class="accordion-btn">🌍 تعلم اللغات</button>
-    <div class="accordion-content">
-      <p>إدارة الدروس، المحادثات، ومصادر تعليم اللغات.</p>
-    </div>
-
-    <button class="accordion-btn">🛍️ المتجر</button>
-    <div class="accordion-content">
-      <p>إضافة منتجات، إدارة الطلبات، العروض والخصومات.</p>
-    </div>
-
-    <button class="accordion-btn">💍 الجواز الحلال</button>
-    <div class="accordion-content">
-      <p>إدارة الملفات والمطابقات الشرعية للمستخدمين.</p>
-    </div>
-  </section>
-
-  <!-- الفوتر -->
-  <footer>
-    © 2025 SkillSpark Hub – لوحة التحكم
-  </footer>
-
-  <!-- JS للأكوردين -->
-  <script>
-    const accBtns = document.querySelectorAll('.accordion-btn');
-    accBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        const content = btn.nextElementSibling;
-        if (content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = "block";
-        }
-      });
-    });
-  </script>
-
-</body>
-</html>
-    <!-- المهارات الرقمية -->
-    <button class="accordion-btn">💻 المهارات الرقمية</button>
-    <div class="accordion-content">
-      <p>برمجة، تصميم، Office، تطوير تطبيقات</p>
-    </div>
-
-    <!-- العلوم -->
-    <button class="accordion-btn">🧪 العلوم</button>
-    <div class="accordion-content">
-      <p>فيزياء، كيمياء، أحياء، فلك</p>
-    </div>
-
-    <!-- تعلم اللغات -->
-    <button class="accordion-btn">🌍 تعلم اللغات</button>
-    <div class="accordion-content">
-      <p>إنجليزي، فرنسي، إسباني، صيني</p>
-    </div>
-
-    <!-- الفيديوهات التعليمية -->
-    <button class="accordion-btn">🎥 الفيديوهات التعليمية</button>
-    <div class="accordion-content">
-      <p>كل الفيديوهات التعليمية لكل المهارات</p>
-    </div>
-
-    <!-- المتجر -->
-    <button class="accordion-btn">🛍️ المتجر</button>
-    <div class="accordion-content">
-      <p>بيع وشراء الموارد والمنتجات التعليمية</p>
-    </div>
-
-    <!-- الجواز الحلال -->
-    <button class="accordion-btn">💍 الجواز الحلال</button>
-    <div class="accordion-content">
-      <p>المستخدمين المسجلين، المواصفات والشروط الشرعية</p>
-    </div>
-
-    <!-- لوحة التحكم -->
-    <button class="accordion-btn">⚙️ لوحة التحكم</button>
-    <div class="accordion-content">
-      <p>إدارة المستخدمين، المحافظ الرقمية، الاشتراكات</p>
-    </div>
-  </section>
-
-  <!-- الفوتر -->
-  <footer>
-    © 2025 SkillSpark Hub – Built for Pi Network
-  </footer>
-
-  <!-- JS للأكوردين -->
-  <script>
-    const accBtns = document.querySelectorAll('.accordion-btn');
-    accBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        const content = btn.nextElementSibling;
-        if (content.style.display === "block") {
-          content.style.display = "none";
-        } else {
-          content.style.display = "block";
-        }
-      });
+    // JS لزر الدفع Step 10
+    document.getElementById("payBtn").addEventListener("click", async () => {
+      try {
+        const result = await Pi.createPayment({
+          amount: 0.01, // مبلغ تجريبي
+          memo: "Step 10 Test Payment",
+          metadata: { step: "10" }
+        });
+        document.getElementById("paymentStatus").textContent = "✅ تمت العملية بنجاح!";
+      } catch (err) {
+        console.error(err);
+        document.getElementById("paymentStatus").textContent = "❌ فشل الدفع، تأكد من Pi Browser والمحفظة";
+      }
     });
   </script>
 
