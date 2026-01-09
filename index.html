@@ -6,8 +6,8 @@
   <title>SkillSpark Hub</title>
   <link rel="stylesheet" href="defaults.css">
 
-  <!-- Pi SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
+  <!-- Pi SDK الرسمي -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
   <style>
     body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; color:#333; }
@@ -35,6 +35,7 @@
     <p>منصة تعليمية ذكية مبنية داخل Pi App Studio – هدفها إفادة المجتمع وتحقيق الربح المشروع</p>
     <button class="login-btn" id="loginBtn">تسجيل الدخول بـ Pi</button>
     <button class="logout-btn" id="logoutBtn" style="display:none;">تسجيل الخروج</button>
+    <button class="btn" id="payBtn" disabled>💰 دفع تجريبي 1 Pi</button>
     <div class="status" id="loginStatus">غير مسجل</div>
   </header>
 
@@ -90,25 +91,28 @@
   <footer>© 2025 SkillSpark Hub – Built for Pi Network</footer>
 
   <!-- جافاسكريبت -->
-  <script>
-    // Pi SDK Login/Logout
+  <script type="module">
+    import { PiSdkBase } from 'https://cdn.jsdelivr.net/npm/pi-sdk-js@latest/dist/pi-sdk.min.js';
+
+    const pi = new PiSdkBase();
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
+    const payBtn = document.getElementById('payBtn');
     const loginStatus = document.getElementById('loginStatus');
 
     async function loginPi() {
-      if (!window.Pi) return alert('Pi SDK غير متاح!');
       try {
-        const user = await Pi.request('getCurrentUser');
-        if (user) {
-          loginStatus.innerText = 'مسجل: ' + (user.username || 'Pi User');
+        await pi.connect();
+        if (PiSdkBase.connected && PiSdkBase.user) {
+          loginStatus.innerText = 'مسجل: ' + (PiSdkBase.user.name || 'Pi User');
           loginBtn.style.display = 'none';
           logoutBtn.style.display = 'inline-block';
-          console.log('User logged in', user);
+          payBtn.disabled = false;
+          console.log('User logged in', PiSdkBase.user);
         }
       } catch (err) {
+        alert('فشل تسجيل الدخول: ' + err);
         console.error(err);
-        alert('فشل تسجيل الدخول!');
       }
     }
 
@@ -116,11 +120,26 @@
       loginStatus.innerText = 'غير مسجل';
       loginBtn.style.display = 'inline-block';
       logoutBtn.style.display = 'none';
+      payBtn.disabled = true;
       console.log('User logged out');
     }
 
     loginBtn.addEventListener('click', loginPi);
     logoutBtn.addEventListener('click', logoutPi);
+
+    payBtn.addEventListener('click', async () => {
+      try {
+        await pi.createPayment({
+          amount: 1,
+          memo: "دفع تجريبي من SkillSpark Hub",
+          metadata: { productId: 42 }
+        });
+        alert('تم إنشاء الدفع التجريبي بنجاح!');
+      } catch(err) {
+        alert('فشل الدفع: ' + err);
+        console.error(err);
+      }
+    });
 
     // File Upload Placeholder
     const uploadBtn = document.getElementById('uploadBtn');
@@ -137,14 +156,7 @@
       console.log('Files selected:', fileInput.files, videoInput.files);
     });
 
-    // Pi SDK Initialization
-    if (window.Pi) {
-      Pi.init({ appName: 'SkillSpark Hub', sandbox: true })
-        .then(() => console.log('Pi SDK initialized in Sandbox!'))
-        .catch(err => console.error('Pi SDK error:', err));
-    }
-
-    // ** تحميل data.json وعرض الأقسام والفروع ديناميكيًا **
+    // Load data.json for sections and branches
     const sectionsContainer = document.querySelector('.sections-container');
 
     async function createAccordion(name, content, parent) {
