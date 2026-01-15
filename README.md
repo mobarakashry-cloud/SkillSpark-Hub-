@@ -1,58 +1,165 @@
-# 📚 مركز سكيل سبارك / SkillSpark Hub
-منصة تعليمية ذكية مبنية داخل Pi App Studio  
-A smart educational platform built inside Pi App Studio
+# 📚 SkillSpark Hub | مركز سكيل سبارك
 
-## 🚀 المميزات / Features
+🚀 **SkillSpark Hub** هي منصة تعليمية ذكية مبنية داخل **Pi App Studio / Pi Network**، تهدف إلى تمكين الأفراد من جميع أنحاء العالم بالعلم النافع والمهارات الحديثة، مع الالتزام الكامل بالقيم والأخلاق الإسلامية.
 
-### 📖 التعليم الإسلامي / Islamic Education
-تعليم قائم على القرآن الكريم والسنة النبوية فقط، بدون أي محتوى مخالف.  
-Education based on the Quran and Sunnah only, without any conflicting content.
+🚀 **SkillSpark Hub** is a smart educational platform built within **Pi App Studio / Pi Network**, designed to empower users worldwide with beneficial knowledge and modern skills, while fully adhering to Islamic values and ethics.
 
-### 💻 المهارات الرقمية / Digital Skills
-برمجة، تصميم، أوفيس، مهارات تقنية حديثة تناسب سوق العمل.  
-Programming, design, Office, modern technical skills suitable for the job market.
+---
 
-### 🧪 العلوم / Sciences
-الفيزياء، الكيمياء، الأحياء، علم الفلك بطريقة مبسطة وسهلة.  
-Physics, Chemistry, Biology, Astronomy explained in a simple and easy way.
+## 🌟 Vision | الرؤية
 
-### 🛠️ الحرف والمهن / Crafts & Professions
-مهارات عملية ومهنية تساعد على التعلم والدخول لسوق العمل.  
-Practical and professional skills that help learning and entering the job market.
+تمكين الإنسان بالعلم الصحيح، والمهارات العملية، والتقنية الحديثة، في بيئة تعليمية آمنة أخلاقيًا ومتوافقة مع الشريعة الإسلامية.
 
-### 🤖 الذكاء الاصطناعي / AI Integration
-تحسين المحتوى التعليمي واقتراح مسارات تعلم ذكية لكل مستخدم.  
-Enhancing educational content and suggesting smart learning paths for each user.
+Empowering individuals through authentic knowledge, practical skills, and modern technology in an ethical, Sharia-compliant learning environment.
 
-### 💰 تحقيق الدخل / Monetization
-إنشاء محتوى مدفوع وإعلانات داخل التطبيق بما يتوافق مع الشريعة الإسلامية.  
-Creating paid content and ads within the app in compliance with Sharia.
+---
 
-## 📂 الأقسام والفروع / Sections & Branches
-📖 التعليم الديني / Islamic Knowledge  
-تفسير، أحاديث، فقه، علوم القرآن. / Tafsir, Hadiths, Fiqh, Quran Sciences  
-- التفسير / Tafsir: سورة البقرة، آل عمران، إلخ / Surah Al-Baqarah, Al-Imran, etc.  
-- الأحاديث / Hadiths: صحيح البخاري، صحيح مسلم، إلخ / Sahih Bukhari, Sahih Muslim, etc.
+## 🚀 Features | المميزات
 
-💻 المهارات الرقمية / Digital Skills: برمجة، تصميم، Office، تطوير تطبيقات / Programming, Design, Office, App Development  
-🧪 العلوم / Sciences: فيزياء، كيمياء، أحياء، فلك / Physics, Chemistry, Biology, Astronomy  
-🌍 تعلم اللغات / Language Learning: إنجليزي، فرنسي، إسباني، صيني / English, French, Spanish, Chinese  
-💍 الجواز الحلال / Halal Marriage: إدارة الملفات والمطابقات الشرعية للمستخدمين / Manage users and Sharia-compliant matches
+### 📖 Islamic Education | التعليم الإسلامي
+- محتوى قائم على **القرآن الكريم والسنة النبوية الصحيحة فقط**  
+- بدون أي محتوى مخالف أو متعارض مع العقيدة الإسلامية السنية
 
-## 🛠️ الأدوات التقنية / Technical Tools
-### الواجهة الأمامية / Frontend
-React (create-react-app)  
-### الواجهة الخلفية / Backend
-Node.js + Express  
-### قاعدة البيانات / Database
-MongoDB / Firebase (Future support)  
-### التكامل / Integration
-Pi SDK + Pi transactions only
+Content strictly based on the **Qur’an and authentic Sunnah**, with no contradictory or inappropriate material.
 
-## 🔗 الروابط / Links
-### 🌐 نطاق التطبيق / App Domain
-[فتح التطبيق / Open App](https://skillsparkhub.pi/)  
-### 🧪 رابط التطوير / Development Link
-[بيئة التطوير / Dev Environment](https://skillsparkhub.dev/)  
+---
 
-© 2025 SkillSpark Hub – Built for Pi Network
+### 💻 Digital Skills | المهارات الرقمية
+- Programming & Software Development  
+- Graphic Design  
+- Office & Productivity Tools  
+- Modern Technical Skills for the Job Market  
+
+برمجة، تصميم، أوفيس، ومهارات تقنية حديثة مطلوبة لسوق العمل.
+
+---
+
+### 🧪 Sciences | العلوم
+- Physics | الفيزياء  
+- Chemistry | الكيمياء  
+- Biology | الأحياء  
+- Astronomy | الفلك  
+
+Presented in a simplified and learner-friendly manner.
+
+---
+
+### 🛠️ Crafts & Professions | الحرف والمهن
+- Skills-based learning  
+- Practical training for workforce readiness  
+
+مهارات عملية وتقنية تساعد على التعلم التطبيقي والدخول لسوق العمل.
+
+---
+
+### 🤖 Artificial Intelligence | الذكاء الاصطناعي
+- Smart content enhancement  
+- Personalized learning paths  
+- AI-powered recommendations  
+
+تحسين المحتوى واقتراح مسارات تعلم ذكية لكل مستخدم.
+
+---
+
+### 💰 Monetization | تحقيق الدخل
+- Paid educational content  
+- In-app advertisements  
+- **Fully compliant with Islamic principles**
+
+محتوى مدفوع وإعلانات داخل التطبيق بما يتوافق مع الشريعة الإسلامية.
+
+---
+
+## 📂 Sections | الأقسام
+
+### 📖 Islamic Studies | التعليم الديني
+- Tafsir | التفسير  
+- Hadith | الحديث  
+- Fiqh | الفقه  
+- Quran Sciences | علوم القرآن  
+
+**Examples:**  
+- Tafsir: Al-Baqarah, Aal-E-Imran, etc.  
+- Hadith: Sahih Al-Bukhari, Sahih Muslim
+
+---
+
+### 💻 Digital Skills | المهارات الرقمية
+- Programming  
+- Design  
+- Office Applications  
+- App Development
+
+---
+
+### 🧪 Sciences | العلوم
+- Physics  
+- Chemistry  
+- Biology  
+- Astronomy
+
+---
+
+### 🌍 Language Learning | تعلم اللغات
+- English  
+- French  
+- Spanish  
+- Chinese
+
+---
+
+### 💍 Halal Marriage | الزواج الحلال
+- User profile management  
+- Sharia-compliant matching system  
+
+إدارة المستخدمين والمطابقة وفق الضوابط الشرعية الإسلامية.
+
+---
+
+## 🛠️ Technology Stack | الأدوات التقنية
+
+### Frontend | الواجهة الأمامية
+- React (Create React App)
+
+### Backend | الواجهة الخلفية
+- Node.js  
+- Express.js
+
+### Database | قاعدة البيانات
+- MongoDB  
+- Firebase (Future Support)
+
+### Integration | التكامل
+- Pi Network SDK  
+- Pi Transactions Only
+
+---
+
+## 🔗 Links | الروابط
+
+🌐 **Official App (PiNet / Pi Browser)**  
+🔗 https://skillsparkhub1968.pinet.com
+
+🌐 **Application Website**  
+🔗 https://skill-spark-hub-tawny.vercel.app/
+
+📦 **GitHub Repository**  
+🔗 https://github.com/mobarakashry-cloud/SkillSpark-Hub-/tree/main
+
+---
+
+## ⚠️ Compliance | الالتزام
+- Islamic ethics and content moderation  
+- Pi Network ecosystem rules  
+- User privacy & security  
+
+---
+
+## 🤝 Contribution | المساهمة
+نرحب بالمساهمات التي تخدم أهداف المنصة وتلتزم بالقيم الأخلاقية والإسلامية.  
+Please open an issue or submit a pull request for contributions.
+
+---
+
+© 2025 **SkillSpark Hub**  
+Built with ❤️ for the **Pi Network Community**
