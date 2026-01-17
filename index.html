@@ -29,6 +29,11 @@
       border: none;
       cursor: pointer;
     }
+    .notice {
+      font-size: 14px;
+      margin-top: 8px;
+      color: #ffeb3b;
+    }
     .accordion-btn {
       width: 100%;
       padding: 10px;
@@ -54,16 +59,13 @@
 <body>
 
 <header>
-  <h1>📚 مركز سكيل سبارك</h1>
+  <h1>📚 SkillSpark Hub</h1>
   <p>منصة تعليمية داخل Pi Network</p>
 
   <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
 
-  <!-- حالة Pi Browser -->
-  <div id="piStatus" style="margin-top:10px;font-size:14px">
-    ⏳ جاري التحقق من Pi Browser...
-  </div>
+  <div id="piNotice" class="notice"></div>
 </header>
 
 <section class="section">
@@ -85,94 +87,98 @@
 
 <script>
 /* ===============================
-   Safe Pi Browser Detection
+   Pi SDK Detection (SAFE)
    =============================== */
 
-let tries = 0;
-const maxTries = 10;
-const piStatus = document.getElementById("piStatus");
+const piNotice = document.getElementById("piNotice");
+const loginBtn = document.getElementById("loginBtn");
+const loginStatus = document.getElementById("loginStatus");
 
-const checkPi = setInterval(() => {
+let piReady = false;
+let attempts = 0;
+
+const waitForPi = setInterval(() => {
+  attempts++;
+
   if (window.Pi) {
-    clearInterval(checkPi);
-
-    console.log("✅ Pi Browser detected");
-    piStatus.innerText = "✅ تم الاتصال بـ Pi Browser";
+    clearInterval(waitForPi);
+    piReady = true;
 
     Pi.init({
       appName: "SkillSpark Hub",
-      sandbox: false   // ✅ Production Mode (Login Only)
+      sandbox: false // حقيقي
     });
 
-    setupApp();
+    piNotice.innerText = "✅ Pi Browser متصل";
+  }
 
-  } else {
-    tries++;
-    if (tries >= maxTries) {
-      clearInterval(checkPi);
-      document.body.innerHTML =
-        "<h2 style='text-align:center;margin-top:40px'>⚠️ افتح التطبيق من Pi Browser فقط</h2>";
-    }
+  if (attempts > 10 && !piReady) {
+    clearInterval(waitForPi);
+    piNotice.innerText =
+      "ℹ️ للحصول على جميع المميزات، يُفضل فتح التطبيق من Pi Browser";
+    loginBtn.disabled = true;
   }
 }, 300);
 
 /* ===============================
-   App Logic
+   Login
    =============================== */
 
-function setupApp() {
-
-  const loginBtn = document.getElementById("loginBtn");
-  const loginStatus = document.getElementById("loginStatus");
-  const container = document.querySelector(".sections-container");
-
-  loginBtn.onclick = async () => {
-    try {
-      const user = await Pi.request("getCurrentUser");
-      loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
-      loginBtn.style.display = "none";
-    } catch (e) {
-      alert("فشل تسجيل الدخول عبر Pi");
-    }
-  };
-
-  function accordion(title, content, parent) {
-    const btn = document.createElement("button");
-    btn.className = "accordion-btn";
-    btn.textContent = title;
-
-    const div = document.createElement("div");
-    div.className = "accordion-content";
-
-    parent.appendChild(btn);
-    parent.appendChild(div);
-
-    if (Array.isArray(content)) {
-      content.forEach(item => {
-        const p = document.createElement("p");
-        p.textContent = item;
-        div.appendChild(p);
-      });
-    }
-
-    btn.onclick = () => {
-      btn.classList.toggle("active");
-      div.style.maxHeight = div.style.maxHeight
-        ? null
-        : div.scrollHeight + "px";
-    };
+loginBtn.onclick = async () => {
+  if (!piReady) {
+    alert("يرجى فتح التطبيق من Pi Browser لتسجيل الدخول");
+    return;
   }
 
-  fetch("data.json")
-    .then(res => res.json())
-    .then(data => {
-      for (const section in data) {
-        const wrapper = document.createElement("div");
-        accordion(section, data[section].الفروع || [], wrapper);
-        container.appendChild(wrapper);
-      }
-    });
+  try {
+    const user = await Pi.request("getCurrentUser");
+    loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
+    loginBtn.style.display = "none";
+  } catch (e) {
+    alert("فشل تسجيل الدخول عبر Pi");
+  }
+};
+
+/* ===============================
+   Accordion + Data
+   =============================== */
+
+const container = document.querySelector(".sections-container");
+
+function accordion(title, content, parent) {
+  const btn = document.createElement("button");
+  btn.className = "accordion-btn";
+  btn.textContent = title;
+
+  const div = document.createElement("div");
+  div.className = "accordion-content";
+
+  parent.appendChild(btn);
+  parent.appendChild(div);
+
+  content.forEach(item => {
+    const p = document.createElement("p");
+    p.textContent = item;
+    div.appendChild(p);
+  });
+
+  btn.onclick = () => {
+    btn.classList.toggle("active");
+    div.style.maxHeight = div.style.maxHeight
+      ? null
+      : div.scrollHeight + "px";
+  };
 }
+
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    for (const section in data) {
+      const wrapper = document.createElement("div");
+      accordion(section, data[section].الفروع || [], wrapper);
+      container.appendChild(wrapper);
+    }
+  });
 </script>
 
 </body>
