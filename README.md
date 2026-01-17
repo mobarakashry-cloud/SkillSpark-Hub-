@@ -28,31 +28,72 @@ Enhancing educational content and suggesting smart learning paths for each user.
 إنشاء محتوى مدفوع وإعلانات داخل التطبيق بما يتوافق مع الشريعة الإسلامية.  
 Creating paid content and ads within the app in compliance with Sharia.
 
-## 📂 الأقسام والفروع / Sections & Branches
-📖 التعليم الديني / Islamic Knowledge  
-تفسير، أحاديث، فقه، علوم القرآن. / Tafsir, Hadiths, Fiqh, Quran Sciences  
-- التفسير / Tafsir: سورة البقرة، آل عمران، إلخ / Surah Al-Baqarah, Al-Imran, etc.  
-- الأحاديث / Hadiths: صحيح البخاري، صحيح مسلم، إلخ / Sahih Bukhari, Sahih Muslim, etc.
+---
 
-💻 المهارات الرقمية / Digital Skills: برمجة، تصميم، Office، تطوير تطبيقات / Programming, Design, Office, App Development  
-🧪 العلوم / Sciences: فيزياء، كيمياء، أحياء، فلك / Physics, Chemistry, Biology, Astronomy  
-🌍 تعلم اللغات / Language Learning: إنجليزي، فرنسي، إسباني، صيني / English, French, Spanish, Chinese  
-💍 الجواز الحلال / Halal Marriage: إدارة الملفات والمطابقات الشرعية للمستخدمين / Manage users and Sharia-compliant matches
+## 📂 الأقسام والفروع / Sections & Branches
+
+### 📖 التعليم الديني / Islamic Knowledge
+تفسير، أحاديث، فقه، علوم القرآن.  
+Tafsir, Hadiths, Fiqh, Quran Sciences  
+
+- **التفسير / Tafsir:** سورة البقرة، آل عمران، إلخ  
+  Surah Al-Baqarah, Al-Imran, etc.  
+- **الأحاديث / Hadiths:** صحيح البخاري، صحيح مسلم، إلخ  
+  Sahih Bukhari, Sahih Muslim, etc.
+
+### 💻 المهارات الرقمية / Digital Skills
+برمجة، تصميم، Office، تطوير تطبيقات  
+Programming, Design, Office, App Development
+
+### 🧪 العلوم / Sciences
+فيزياء، كيمياء، أحياء، فلك  
+Physics, Chemistry, Biology, Astronomy
+
+### 🌍 تعلم اللغات / Language Learning
+إنجليزي، فرنسي، إسباني، صيني  
+English, French, Spanish, Chinese
+
+### 💍 الجواز الحلال / Halal Marriage
+إدارة الملفات والمطابقات الشرعية للمستخدمين  
+Manage users and Sharia-compliant matches
+
+---
 
 ## 🛠️ الأدوات التقنية / Technical Tools
+
 ### الواجهة الأمامية / Frontend
-React (create-react-app)  
+HTML, CSS, JavaScript  
+
 ### الواجهة الخلفية / Backend
-Node.js + Express  
+Node.js + Express (future-ready)
+
 ### قاعدة البيانات / Database
-MongoDB / Firebase (Future support)  
+MongoDB / Firebase (Future support)
+
 ### التكامل / Integration
-Pi SDK + Pi transactions only
+Pi SDK + Pi authentication only
+
+---
+
+## 🔐 الخصوصية والالتزام / Privacy & Compliance
+- لا يتم جمع أي بيانات شخصية سوى اسم مستخدم Pi عند تسجيل الدخول
+- لا يتم بيع أو مشاركة البيانات مع أي طرف ثالث
+- التطبيق تعليمي فقط ولا يقدم خدمات مالية مباشرة
+- جميع السياسات متوافقة مع إرشادات Pi Network
+
+---
 
 ## 🔗 الروابط / Links
-### 🌐 نطاق التطبيق / App Domain
-[فتح التطبيق / Open App](https://skillsparkhub.pi/)  
-### 🧪 رابط التطوير / Development Link
-[بيئة التطوير / Dev Environment](https://skillsparkhub.dev/)  
+
+### 🌐 فتح التطبيق عبر Pi Browser
+[Open App](https://skill-spark-hub-tawny.vercel.app)
+
+### 📄 سياسة الخصوصية
+[Privacy Policy](https://skill-spark-hub-tawny.vercel.app/privacy-policy)
+
+### 📄 شروط الاستخدام
+[Terms of Service](https://skill-spark-hub-tawny.vercel.app/terms-of-service)
+
+---
 
 © 2025 SkillSpark Hub – Built for Pi Network
