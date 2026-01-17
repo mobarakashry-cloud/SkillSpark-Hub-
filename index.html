@@ -100,6 +100,12 @@
       font-size: 12px;
       opacity: 0.6;
     }
+
+    .progress {
+      font-size: 13px;
+      margin-top: 6px;
+      color: #4A148C;
+    }
   </style>
 </head>
 
@@ -115,22 +121,11 @@
   <div class="notice" id="piNotice">⏳ جاري التحقق من Pi Browser...</div>
 </header>
 
-<!-- 🔥 مؤشر التقدم -->
-<section class="section">
-  <div class="card">
-    <strong>📈 تقدمك اليوم</strong>
-    <div style="margin-top:8px;background:#eee;border-radius:10px;overflow:hidden;">
-      <div id="progressBar"
-           style="height:10px;width:0%;background:#6A1B9A;transition:0.3s">
-      </div>
-    </div>
-    <small id="progressText">ابدأ التعلّم لعرض التقدم</small>
-  </div>
-</section>
-
 <section class="section">
   <h2>🔮 مقترح لك اليوم</h2>
   <div class="card" id="suggestionBox">جاري التحميل...</div>
+  <button id="shareBtn" class="btn">📤 شارك SkillSpark Hub</button>
+  <div class="progress" id="progressBox"></div>
 </section>
 
 <section class="section">
@@ -141,6 +136,7 @@
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
+/* ================= Pi Check ================= */
 let piReady = false;
 const piNotice = document.getElementById("piNotice");
 
@@ -159,43 +155,65 @@ const waitForPi = setInterval(() => {
   }
 }, 300);
 
-// زر ابدأ
+/* ================= Start Button ================= */
 document.getElementById("startBtn").onclick = () => {
   document.getElementById("suggestionBox")
     .scrollIntoView({ behavior: "smooth" });
 };
 
-// ===== التقدم =====
-function updateProgress() {
-  const visited = JSON.parse(localStorage.getItem("visitedSections") || "[]");
-  const total = document.querySelectorAll(".accordion").length || 1;
-  const percent = Math.min((visited.length / total) * 100, 100);
-
-  document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("progressText").innerText =
-    `استكشفت ${visited.length} قسم`;
+/* ================= Local Storage Helpers ================= */
+function saveInterest(name) {
+  localStorage.setItem("interest", name);
 }
 
-function markVisited(section) {
-  let visited = JSON.parse(localStorage.getItem("visitedSections") || "[]");
-  if (!visited.includes(section)) {
-    visited.push(section);
-    localStorage.setItem("visitedSections", JSON.stringify(visited));
-    updateProgress();
+function markVisited(name) {
+  let visited = JSON.parse(localStorage.getItem("visited") || "[]");
+  if (!visited.includes(name)) {
+    visited.push(name);
+    localStorage.setItem("visited", JSON.stringify(visited));
   }
 }
 
-// تحميل البيانات
+function updateProgress(total) {
+  const visited = JSON.parse(localStorage.getItem("visited") || "[]");
+  document.getElementById("progressBox").innerText =
+    `📊 تقدّمك: ${visited.length} / ${total} أقسام تمت زيارتها`;
+}
+
+/* ================= Share ================= */
+let currentSuggestion = "";
+
+document.getElementById("shareBtn").onclick = () => {
+  const text = `📚 SkillSpark Hub
+تعلمت اليوم: ${currentSuggestion}
+🔗 جرّب التطبيق داخل Pi Browser`;
+
+  if (navigator.share) {
+    navigator.share({ text });
+  } else {
+    navigator.clipboard.writeText(text);
+    alert("تم نسخ النص، شاركه الآن ✨");
+  }
+};
+
+/* ================= Load Data ================= */
 fetch("data.json")
   .then(res => res.json())
   .then(data => {
     const keys = Object.keys(data);
-    const random = keys[Math.floor(Math.random() * keys.length)];
+
+    const savedInterest = localStorage.getItem("interest");
+    const selected = savedInterest && data[savedInterest]
+      ? savedInterest
+      : keys[Math.floor(Math.random() * keys.length)];
+
+    currentSuggestion = selected.replace(/_/g," ");
 
     document.getElementById("suggestionBox").innerHTML =
-      `<strong>${random.replace(/_/g," ")}</strong><br>${data[random].الوصف}`;
+      `<strong>${currentSuggestion}</strong><br>${data[selected].الوصف}`;
 
     const container = document.getElementById("sections");
+
     keys.forEach(name => {
       const s = data[name];
       const div = document.createElement("div");
@@ -214,18 +232,22 @@ fetch("data.json")
 
       const tags = div.querySelector(".tags");
       (Array.isArray(s.الفروع) ? s.الفروع : Object.keys(s.الفروع || {}))
-        .forEach(t => tags.innerHTML += `<span class="tag">${t.replace(/_/g," ")}</span>`);
+        .forEach(t => {
+          tags.innerHTML += `<span class="tag">${t.replace(/_/g," ")}</span>`;
+        });
 
       div.onclick = () => {
+        saveInterest(name);
         markVisited(name);
         const c = div.querySelector(".accordion-content");
         c.style.display = c.style.display === "block" ? "none" : "block";
+        updateProgress(keys.length);
       };
 
       container.appendChild(div);
     });
 
-    updateProgress();
+    updateProgress(keys.length);
   });
 </script>
 
