@@ -20,6 +20,12 @@
     .card {
       margin-bottom: 15px;
     }
+
+    .notice {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 6px;
+    }
   </style>
 </head>
 
@@ -31,6 +37,12 @@
 
   <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
+
+  <!-- إشعار الخصوصية (مهم للمراجعة) -->
+  <div class="notice">
+    🔐 نستخدم اسم مستخدم Pi فقط ولا نجمع أي بيانات شخصية أخرى
+  </div>
+
   <div id="piNotice" class="notice">⏳ جاري التحقق من Pi Browser...</div>
 </header>
 
@@ -66,7 +78,15 @@ const waitForPi = setInterval(() => {
 
   if (window.Pi) {
     clearInterval(waitForPi);
-    Pi.init({ appName: "SkillSpark Hub", sandbox: false });
+
+    Pi.init({
+      appName: "SkillSpark Hub",
+      sandbox: false,
+      onIncompletePaymentFound: payment => {
+        console.log("Incomplete payment found:", payment);
+      }
+    });
+
     piReady = true;
     piNotice.innerText = "✅ Pi Browser متصل – يمكنك تسجيل الدخول";
   }
@@ -85,16 +105,23 @@ loginBtn.onclick = async () => {
   }
 
   try {
-    const auth = await Pi.authenticate(["username"], () => {});
+    const auth = await Pi.authenticate(
+      ["username"],
+      () => {
+        console.log("Pi authentication requested");
+      }
+    );
+
     loginStatus.innerText = "مرحباً " + auth.user.username;
     loginBtn.style.display = "none";
-  } catch {
+
+  } catch (e) {
     alert("تم إلغاء تسجيل الدخول");
   }
 };
 
 /* ===============================
-   تحميل الأقسام (التعديل الأساسي)
+   تحميل الأقسام
    =============================== */
 function loadSections() {
   const container = document.querySelector(".sections-container");
@@ -143,6 +170,9 @@ function loadSections() {
         card.appendChild(branchesWrap);
         container.appendChild(card);
       });
+    })
+    .catch(err => {
+      console.error("Error loading data.json", err);
     });
 }
 
