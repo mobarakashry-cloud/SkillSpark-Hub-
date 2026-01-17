@@ -5,44 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SkillSpark Hub</title>
 
-<script src="https://sdk.minepi.com/pi-sdk.js"></script>
-
 <style>
 body{
   font-family: system-ui;
+  background:#f6f4fb;
   margin:0;
-  background:#f7f5fb;
 }
 header{
-  text-align:center;
-  padding:30px 16px;
   background:linear-gradient(135deg,#4A148C,#6A1B9A);
-  color:white;
+  color:#fff;
+  text-align:center;
+  padding:25px;
   border-radius:0 0 20px 20px;
 }
-.btn{
-  background:white;
-  color:#4A148C;
-  border:none;
-  padding:14px 22px;
-  border-radius:25px;
-  cursor:pointer;
-  margin-top:10px;
-}
-.section{padding:20px 16px}
+.section{padding:16px}
 .card{
-  background:white;
+  background:#fff;
+  padding:14px;
   border-radius:16px;
-  padding:16px;
-  margin-bottom:14px;
-  box-shadow:0 4px 10px rgba(0,0,0,.05);
+  margin-bottom:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.05)
+}
+.btn{
+  background:#4A148C;
+  color:#fff;
+  border:none;
+  padding:12px 18px;
+  border-radius:22px;
+  cursor:pointer;
 }
 .accordion{
-  background:white;
+  background:#fff;
   border-radius:16px;
   padding:14px;
-  margin-bottom:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,.05);
+  margin-bottom:10px;
   cursor:pointer;
 }
 .accordion-header{
@@ -53,24 +49,31 @@ header{
   display:none;
   margin-top:10px;
 }
-.tag{
-  display:inline-block;
-  background:#EDE7F6;
-  color:#4A148C;
-  padding:6px 12px;
-  border-radius:20px;
-  font-size:12px;
-  margin:4px;
+.lesson{
+  background:#ede7f6;
+  padding:10px;
+  border-radius:12px;
+  margin-top:6px;
+  font-size:13px;
+}
+input,textarea,select{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:10px;
+  border:1px solid #ccc;
+}
+.ai-box{
+  background:#f3e5f5;
+  padding:12px;
+  border-radius:14px;
+  margin-top:8px;
 }
 footer{
   text-align:center;
-  padding:16px;
   font-size:12px;
   opacity:.6;
-}
-.progress{
-  color:#4A148C;
-  font-size:13px;
+  padding:12px;
 }
 </style>
 </head>
@@ -79,111 +82,108 @@ footer{
 
 <header>
 <h1>📚 SkillSpark Hub</h1>
-<p>تعلم مهارة جديدة كل يوم داخل Pi Network</p>
-<button class="btn" onclick="scrollToDash()">🚀 ابدأ الآن</button>
-<div id="piNotice">⏳ التحقق من Pi Browser...</div>
+<p>تعلم – شارك – طوّر مهارتك</p>
 </header>
 
-<section class="section" id="dashboard">
-<h2>📊 لوحتك اليوم</h2>
-<div class="card" id="dashMsg">جاري التحليل...</div>
-<div class="card" id="dashNext">...</div>
+<section class="section">
+<div class="card">
+<h3>➕ أضف درس جديد</h3>
+<select id="lessonSection">
+<option>اللغات</option>
+<option>العلوم</option>
+<option>التكنولوجيا</option>
+<option>المهارات الرقمية</option>
+<option>المهن الحرفية</option>
+</select>
+<input id="lessonTitle" placeholder="عنوان الدرس">
+<input id="lessonLink" placeholder="رابط (يوتيوب / مقال)">
+<textarea id="lessonDesc" placeholder="وصف مختصر"></textarea>
+<button class="btn" onclick="addLesson()">نشر الدرس</button>
+</div>
 </section>
 
 <section class="section">
-<h2>🔮 مقترح لك اليوم</h2>
-<div class="card" id="suggestionBox">تحميل...</div>
-<div class="progress" id="progressBox"></div>
-</section>
-
-<section class="section">
-<h2>📂 الأقسام التعليمية</h2>
+<h3>📂 الأقسام التعليمية</h3>
 <div id="sections"></div>
 </section>
 
-<footer>© 2025 SkillSpark Hub – Pi Network</footer>
+<footer>© 2025 SkillSpark Hub</footer>
 
 <script>
-/* ===== Pi Check ===== */
-let tries=0;
-const piNotice=document.getElementById("piNotice");
-const piCheck=setInterval(()=>{
-  tries++;
-  if(window.Pi){
-    clearInterval(piCheck);
-    Pi.init({appName:"SkillSpark Hub"});
-    piNotice.innerText="✅ Pi Browser متصل";
-  }
-  if(tries>8){
-    clearInterval(piCheck);
-    piNotice.innerText="ℹ️ التصفح بدون تسجيل";
-  }
-},300);
+const sectionsData={
+  "اللغات":[],
+  "العلوم":[],
+  "التكنولوجيا":[],
+  "المهارات الرقمية":[],
+  "المهن الحرفية":[]
+};
 
-/* ===== Utils ===== */
-function scrollToDash(){
-  document.getElementById("dashboard").scrollIntoView({behavior:"smooth"});
-}
-function saveInterest(v){localStorage.setItem("interest",v)}
-function markVisited(v){
-  let a=JSON.parse(localStorage.getItem("visited")||"[]");
-  if(!a.includes(v)){a.push(v);localStorage.setItem("visited",JSON.stringify(a))}
+function load(){
+  const saved=JSON.parse(localStorage.getItem("lessons")||"{}");
+  Object.assign(sectionsData,saved);
+  render();
 }
 
-/* ===== Load Data ===== */
-fetch("data.json").then(r=>r.json()).then(data=>{
-const keys=Object.keys(data);
-
-/* ===== Smart Daily Suggestion ===== */
-const today=new Date().toDateString();
-let suggested;
-if(localStorage.getItem("suggestionDay")==today){
-  suggested=localStorage.getItem("dailySuggestion");
-}else{
-  suggested=localStorage.getItem("interest")||keys[Math.floor(Math.random()*keys.length)];
-  localStorage.setItem("dailySuggestion",suggested);
-  localStorage.setItem("suggestionDay",today);
+function save(){
+  localStorage.setItem("lessons",JSON.stringify(sectionsData));
 }
-document.getElementById("suggestionBox").innerHTML=
-  `<strong>${suggested}</strong><br>${data[suggested].الوصف||""}`;
 
-/* ===== Dashboard ===== */
-const visited=JSON.parse(localStorage.getItem("visited")||"[]");
-document.getElementById("progressBox").innerText=
-  `📈 تقدمك ${visited.length} / ${keys.length}`;
+function addLesson(){
+  const s=document.getElementById("lessonSection").value;
+  const t=document.getElementById("lessonTitle").value;
+  const l=document.getElementById("lessonLink").value;
+  const d=document.getElementById("lessonDesc").value;
 
-document.getElementById("dashMsg").innerText=
-  visited.length
-  ? `🔥 ممتاز! زُرت ${visited.length} أقسام`
-  : "👋 ابدأ رحلتك باختيار أي قسم";
+  if(!t) return alert("اكتب عنوان الدرس");
 
-document.getElementById("dashNext").innerText=
-  localStorage.getItem("interest")
-  ? `➡️ كمّل في ${localStorage.getItem("interest")}`
-  : "🌱 جرّب قسم جديد";
+  sectionsData[s].push({t,l,d});
+  save();
+  render();
+  alert("تم إضافة الدرس ✅");
+}
 
-/* ===== Sections ===== */
-const container=document.getElementById("sections");
-keys.forEach(k=>{
-  const acc=document.createElement("div");
-  acc.className="accordion";
-  acc.innerHTML=`
-    <div class="accordion-header">
-      <strong>${k}</strong><span>⬇️</span>
-    </div>
-    <div class="accordion-content">${data[k].الوصف||""}</div>
-  `;
-  acc.onclick=()=>{
-    saveInterest(k);
-    markVisited(k);
-    const c=acc.querySelector(".accordion-content");
-    const open=c.style.display=="block";
-    c.style.display=open?"none":"block";
-    acc.querySelector("span").innerText=open?"⬇️":"⬆️";
-  };
-  container.appendChild(acc);
-});
-});
+function aiExplain(text){
+  return `🤖 شرح مبسط:
+${text || "هذا درس يساعدك على تعلم مهارة جديدة خطوة بخطوة. حاول مشاهدة الرابط ثم التطبيق العملي."}`;
+}
+
+function render(){
+  const c=document.getElementById("sections");
+  c.innerHTML="";
+  Object.keys(sectionsData).forEach(sec=>{
+    const div=document.createElement("div");
+    div.className="accordion";
+    div.innerHTML=`
+      <div class="accordion-header">
+        <strong>${sec}</strong><span>⬇️</span>
+      </div>
+      <div class="accordion-content"></div>
+    `;
+    const content=div.querySelector(".accordion-content");
+
+    sectionsData[sec].forEach(ls=>{
+      const l=document.createElement("div");
+      l.className="lesson";
+      l.innerHTML=`
+        <strong>${ls.t}</strong><br>
+        <a href="${ls.l}" target="_blank">🔗 فتح الدرس</a>
+        <p>${ls.d}</p>
+        <div class="ai-box">${aiExplain(ls.d)}</div>
+      `;
+      content.appendChild(l);
+    });
+
+    div.onclick=()=>{
+      const open=content.style.display==="block";
+      content.style.display=open?"none":"block";
+      div.querySelector("span").innerText=open?"⬇️":"⬆️";
+    };
+
+    c.appendChild(div);
+  });
+}
+
+load();
 </script>
 
 </body>
