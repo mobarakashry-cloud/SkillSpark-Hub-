@@ -5,53 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SkillSpark Hub</title>
 
+  <!-- CSS الأساسي -->
   <link rel="stylesheet" href="defaults.css">
 
-  <!-- Pi SDK (OFFICIAL) -->
+  <!-- Pi SDK -->
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
   <style>
-    body { font-family: Arial; margin: 0; background: #f9f9f9 }
-    header, footer {
-      text-align: center;
-      background: #4a148c;
-      color: #fff;
-      padding: 15px;
+    .sections-container {
+      max-width: 1200px;
+      margin: auto;
     }
-    .section { padding: 20px; max-width: 1200px; margin: auto }
-    .cards { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center }
-    .card { background: #fff; padding: 15px; border-radius: 10px; width: 220px }
-    .btn {
-      background: #4a148c;
-      color: #fff;
-      padding: 8px 12px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-    }
-    .accordion-btn {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      background: #ddd;
-      margin-top: 5px;
-      cursor: pointer;
-    }
-    .accordion-btn.active {
-      background: #4a148c;
-      color: #fff;
-    }
-    .accordion-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: 0.3s;
-      background: #eee;
-      padding: 0 10px;
-    }
-    .notice {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #ffeb3b;
+
+    .card {
+      margin-bottom: 15px;
     }
   </style>
 </head>
@@ -85,27 +52,21 @@
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
+/* ===============================
+   Pi SDK
+   =============================== */
 let piReady = false;
-
 const piNotice = document.getElementById("piNotice");
 const loginBtn = document.getElementById("loginBtn");
 const loginStatus = document.getElementById("loginStatus");
 
-/* ===============================
-   انتظار Pi SDK بشكل آمن
-   =============================== */
 let attempts = 0;
 const waitForPi = setInterval(() => {
   attempts++;
 
   if (window.Pi) {
     clearInterval(waitForPi);
-
-    Pi.init({
-      appName: "SkillSpark Hub",
-      sandbox: false
-    });
-
+    Pi.init({ appName: "SkillSpark Hub", sandbox: false });
     piReady = true;
     piNotice.innerText = "✅ Pi Browser متصل – يمكنك تسجيل الدخول";
   }
@@ -117,65 +78,70 @@ const waitForPi = setInterval(() => {
   }
 }, 300);
 
-/* ===============================
-   تسجيل الدخول الصحيح (Pi.authenticate)
-   =============================== */
 loginBtn.onclick = async () => {
   if (!piReady) {
-    alert("يرجى فتح التطبيق من Pi Browser لتسجيل الدخول");
+    alert("يرجى فتح التطبيق من Pi Browser");
     return;
   }
 
   try {
-    const scopes = ["username"];
-    const auth = await Pi.authenticate(scopes, () => {});
-
+    const auth = await Pi.authenticate(["username"], () => {});
     loginStatus.innerText = "مرحباً " + auth.user.username;
     loginBtn.style.display = "none";
-
-    localStorage.setItem("pi_user", auth.user.username);
-  } catch (err) {
+  } catch {
     alert("تم إلغاء تسجيل الدخول");
-    console.error(err);
   }
 };
 
 /* ===============================
-   تحميل الأقسام
+   تحميل الأقسام (التعديل الأساسي)
    =============================== */
 function loadSections() {
   const container = document.querySelector(".sections-container");
-
-  function accordion(title, content) {
-    const btn = document.createElement("button");
-    btn.className = "accordion-btn";
-    btn.textContent = title;
-
-    const div = document.createElement("div");
-    div.className = "accordion-content";
-
-    content.forEach(item => {
-      const p = document.createElement("p");
-      p.textContent = item;
-      div.appendChild(p);
-    });
-
-    btn.onclick = () => {
-      btn.classList.toggle("active");
-      div.style.maxHeight = div.style.maxHeight
-        ? null
-        : div.scrollHeight + "px";
-    };
-
-    container.appendChild(btn);
-    container.appendChild(div);
-  }
+  container.innerHTML = "";
 
   fetch("data.json")
     .then(res => res.json())
     .then(data => {
-      Object.keys(data).forEach(section => {
-        accordion(section, data[section].الفروع || []);
+      Object.keys(data).forEach(sectionName => {
+        const section = data[sectionName];
+
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const title = document.createElement("h3");
+        title.textContent = sectionName.replace(/_/g, " ");
+        card.appendChild(title);
+
+        if (section.الوصف) {
+          const desc = document.createElement("p");
+          desc.textContent = section.الوصف;
+          desc.style.opacity = "0.8";
+          card.appendChild(desc);
+        }
+
+        const branchesWrap = document.createElement("div");
+        branchesWrap.style.display = "flex";
+        branchesWrap.style.flexWrap = "wrap";
+        branchesWrap.style.gap = "8px";
+        branchesWrap.style.marginTop = "10px";
+
+        const branches = section.الفروع || {};
+
+        Object.keys(branches).forEach(branchName => {
+          const tag = document.createElement("span");
+          tag.textContent = branchName.replace(/_/g, " ");
+          tag.style.background = "#EDE7F6";
+          tag.style.color = "#4A148C";
+          tag.style.padding = "6px 10px";
+          tag.style.borderRadius = "20px";
+          tag.style.fontSize = "13px";
+
+          branchesWrap.appendChild(tag);
+        });
+
+        card.appendChild(branchesWrap);
+        container.appendChild(card);
       });
     });
 }
