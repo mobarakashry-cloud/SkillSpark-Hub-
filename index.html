@@ -6,8 +6,6 @@
   <title>SkillSpark Hub</title>
 
   <link rel="stylesheet" href="defaults.css">
-
-  <!-- Pi SDK -->
   <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
 
   <style>
@@ -29,11 +27,6 @@
       border: none;
       cursor: pointer;
     }
-    .notice {
-      font-size: 14px;
-      margin-top: 8px;
-      color: #ffeb3b;
-    }
     .accordion-btn {
       width: 100%;
       padding: 10px;
@@ -53,6 +46,11 @@
       background: #eee;
       padding: 0 10px;
     }
+    .notice {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #ffeb3b;
+    }
   </style>
 </head>
 
@@ -64,7 +62,6 @@
 
   <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
-
   <div id="piNotice" class="notice"></div>
 </header>
 
@@ -86,99 +83,79 @@
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
-/* ===============================
-   Pi SDK Detection (SAFE)
-   =============================== */
-
-const piNotice = document.getElementById("piNotice");
-const loginBtn = document.getElementById("loginBtn");
-const loginStatus = document.getElementById("loginStatus");
-
 let piReady = false;
-let attempts = 0;
 
-const waitForPi = setInterval(() => {
-  attempts++;
-
+function initPiIfAvailable() {
   if (window.Pi) {
-    clearInterval(waitForPi);
-    piReady = true;
-
     Pi.init({
       appName: "SkillSpark Hub",
-      sandbox: false // حقيقي
+      sandbox: false
     });
-
-    piNotice.innerText = "✅ Pi Browser متصل";
+    piReady = true;
+    document.getElementById("piNotice").innerText = "✅ Pi Browser متصل";
+  } else {
+    document.getElementById("piNotice").innerText =
+      "ℹ️ يمكنك تصفح المحتوى، تسجيل الدخول يتطلب Pi Browser";
   }
+}
 
-  if (attempts > 10 && !piReady) {
-    clearInterval(waitForPi);
-    piNotice.innerText =
-      "ℹ️ للحصول على جميع المميزات، يُفضل فتح التطبيق من Pi Browser";
-    loginBtn.disabled = true;
-  }
-}, 300);
+function setupLogin() {
+  const loginBtn = document.getElementById("loginBtn");
+  const loginStatus = document.getElementById("loginStatus");
 
-/* ===============================
-   Login
-   =============================== */
-
-loginBtn.onclick = async () => {
-  if (!piReady) {
-    alert("يرجى فتح التطبيق من Pi Browser لتسجيل الدخول");
-    return;
-  }
-
-  try {
-    const user = await Pi.request("getCurrentUser");
-    loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
-    loginBtn.style.display = "none";
-  } catch (e) {
-    alert("فشل تسجيل الدخول عبر Pi");
-  }
-};
-
-/* ===============================
-   Accordion + Data
-   =============================== */
-
-const container = document.querySelector(".sections-container");
-
-function accordion(title, content, parent) {
-  const btn = document.createElement("button");
-  btn.className = "accordion-btn";
-  btn.textContent = title;
-
-  const div = document.createElement("div");
-  div.className = "accordion-content";
-
-  parent.appendChild(btn);
-  parent.appendChild(div);
-
-  content.forEach(item => {
-    const p = document.createElement("p");
-    p.textContent = item;
-    div.appendChild(p);
-  });
-
-  btn.onclick = () => {
-    btn.classList.toggle("active");
-    div.style.maxHeight = div.style.maxHeight
-      ? null
-      : div.scrollHeight + "px";
+  loginBtn.onclick = async () => {
+    if (!piReady) {
+      alert("يرجى فتح التطبيق من Pi Browser لتسجيل الدخول");
+      return;
+    }
+    try {
+      const user = await Pi.request("getCurrentUser");
+      loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
+      loginBtn.style.display = "none";
+    } catch {
+      alert("فشل تسجيل الدخول عبر Pi");
+    }
   };
 }
 
-fetch("data.json")
-  .then(res => res.json())
-  .then(data => {
-    for (const section in data) {
-      const wrapper = document.createElement("div");
-      accordion(section, data[section].الفروع || [], wrapper);
-      container.appendChild(wrapper);
-    }
-  });
+function loadSections() {
+  const container = document.querySelector(".sections-container");
+
+  function accordion(title, content) {
+    const btn = document.createElement("button");
+    btn.className = "accordion-btn";
+    btn.textContent = title;
+
+    const div = document.createElement("div");
+    div.className = "accordion-content";
+
+    content.forEach(item => {
+      const p = document.createElement("p");
+      p.textContent = item;
+      div.appendChild(p);
+    });
+
+    btn.onclick = () => {
+      btn.classList.toggle("active");
+      div.style.maxHeight = div.style.maxHeight ? null : div.scrollHeight + "px";
+    };
+
+    container.appendChild(btn);
+    container.appendChild(div);
+  }
+
+  fetch("data.json")
+    .then(res => res.json())
+    .then(data => {
+      Object.keys(data).forEach(section => {
+        accordion(section, data[section].الفروع || []);
+      });
+    });
+}
+
+initPiIfAvailable();
+setupLogin();
+loadSections();
 </script>
 
 </body>
