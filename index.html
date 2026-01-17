@@ -64,7 +64,7 @@
 
   <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
-  <div id="piNotice" class="notice"></div>
+  <div id="piNotice" class="notice">⏳ جاري التحقق من Pi Browser...</div>
 </header>
 
 <section class="section">
@@ -86,30 +86,40 @@
 
 <script>
 let piReady = false;
+
 const piNotice = document.getElementById("piNotice");
 const loginBtn = document.getElementById("loginBtn");
 const loginStatus = document.getElementById("loginStatus");
 
-/* ⏳ انتظار Pi SDK */
-let tries = 0;
+/* ===============================
+   انتظار Pi SDK بشكل آمن
+   =============================== */
+let attempts = 0;
 const waitForPi = setInterval(() => {
-  tries++;
+  attempts++;
 
   if (window.Pi) {
     clearInterval(waitForPi);
-    Pi.init({ appName: "SkillSpark Hub", sandbox: false });
+
+    Pi.init({
+      appName: "SkillSpark Hub",
+      sandbox: false
+    });
+
     piReady = true;
     piNotice.innerText = "✅ Pi Browser متصل – يمكنك تسجيل الدخول";
   }
 
-  if (tries > 10 && !piReady) {
+  if (attempts >= 10 && !piReady) {
     clearInterval(waitForPi);
     piNotice.innerText =
       "ℹ️ يمكنك تصفح المحتوى، تسجيل الدخول يتطلب Pi Browser";
   }
 }, 300);
 
-/* 🔐 تسجيل الدخول */
+/* ===============================
+   تسجيل الدخول الصحيح (Pi.authenticate)
+   =============================== */
 loginBtn.onclick = async () => {
   if (!piReady) {
     alert("يرجى فتح التطبيق من Pi Browser لتسجيل الدخول");
@@ -117,15 +127,22 @@ loginBtn.onclick = async () => {
   }
 
   try {
-    const user = await Pi.request("getCurrentUser");
-    loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
+    const scopes = ["username"];
+    const auth = await Pi.authenticate(scopes, () => {});
+
+    loginStatus.innerText = "مرحباً " + auth.user.username;
     loginBtn.style.display = "none";
-  } catch {
-    alert("فشل تسجيل الدخول عبر Pi");
+
+    localStorage.setItem("pi_user", auth.user.username);
+  } catch (err) {
+    alert("تم إلغاء تسجيل الدخول");
+    console.error(err);
   }
 };
 
-/* 📂 تحميل الأقسام */
+/* ===============================
+   تحميل الأقسام
+   =============================== */
 function loadSections() {
   const container = document.querySelector(".sections-container");
 
