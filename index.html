@@ -6,7 +6,9 @@
   <title>SkillSpark Hub</title>
 
   <link rel="stylesheet" href="defaults.css">
-  <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
+
+  <!-- Pi SDK (OFFICIAL) -->
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
   <style>
     body { font-family: Arial; margin: 0; background: #f9f9f9 }
@@ -84,40 +86,46 @@
 
 <script>
 let piReady = false;
+const piNotice = document.getElementById("piNotice");
+const loginBtn = document.getElementById("loginBtn");
+const loginStatus = document.getElementById("loginStatus");
 
-function initPiIfAvailable() {
+/* ⏳ انتظار Pi SDK */
+let tries = 0;
+const waitForPi = setInterval(() => {
+  tries++;
+
   if (window.Pi) {
-    Pi.init({
-      appName: "SkillSpark Hub",
-      sandbox: false
-    });
+    clearInterval(waitForPi);
+    Pi.init({ appName: "SkillSpark Hub", sandbox: false });
     piReady = true;
-    document.getElementById("piNotice").innerText = "✅ Pi Browser متصل";
-  } else {
-    document.getElementById("piNotice").innerText =
+    piNotice.innerText = "✅ Pi Browser متصل – يمكنك تسجيل الدخول";
+  }
+
+  if (tries > 10 && !piReady) {
+    clearInterval(waitForPi);
+    piNotice.innerText =
       "ℹ️ يمكنك تصفح المحتوى، تسجيل الدخول يتطلب Pi Browser";
   }
-}
+}, 300);
 
-function setupLogin() {
-  const loginBtn = document.getElementById("loginBtn");
-  const loginStatus = document.getElementById("loginStatus");
+/* 🔐 تسجيل الدخول */
+loginBtn.onclick = async () => {
+  if (!piReady) {
+    alert("يرجى فتح التطبيق من Pi Browser لتسجيل الدخول");
+    return;
+  }
 
-  loginBtn.onclick = async () => {
-    if (!piReady) {
-      alert("يرجى فتح التطبيق من Pi Browser لتسجيل الدخول");
-      return;
-    }
-    try {
-      const user = await Pi.request("getCurrentUser");
-      loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
-      loginBtn.style.display = "none";
-    } catch {
-      alert("فشل تسجيل الدخول عبر Pi");
-    }
-  };
-}
+  try {
+    const user = await Pi.request("getCurrentUser");
+    loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
+    loginBtn.style.display = "none";
+  } catch {
+    alert("فشل تسجيل الدخول عبر Pi");
+  }
+};
 
+/* 📂 تحميل الأقسام */
 function loadSections() {
   const container = document.querySelector(".sections-container");
 
@@ -137,7 +145,9 @@ function loadSections() {
 
     btn.onclick = () => {
       btn.classList.toggle("active");
-      div.style.maxHeight = div.style.maxHeight ? null : div.scrollHeight + "px";
+      div.style.maxHeight = div.style.maxHeight
+        ? null
+        : div.scrollHeight + "px";
     };
 
     container.appendChild(btn);
@@ -153,8 +163,6 @@ function loadSections() {
     });
 }
 
-initPiIfAvailable();
-setupLogin();
 loadSections();
 </script>
 
