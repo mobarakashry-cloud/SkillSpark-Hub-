@@ -4,21 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SkillSpark Hub</title>
+
   <link rel="stylesheet" href="defaults.css">
 
   <!-- Pi SDK -->
   <script src="https://cdn.jsdelivr.net/npm/pi-sdk@latest/pi.min.js"></script>
 
   <style>
-    body{font-family:Arial;margin:0;background:#f9f9f9}
-    header,footer{text-align:center;background:#4a148c;color:#fff;padding:15px}
-    .section{padding:20px;max-width:1200px;margin:auto}
-    .cards{display:flex;flex-wrap:wrap;gap:15px;justify-content:center}
-    .card{background:#fff;padding:15px;border-radius:10px;width:220px}
-    .btn{background:#4a148c;color:#fff;padding:8px 12px;border-radius:5px;display:inline-block}
-    .accordion-btn{width:100%;padding:10px;border:none;background:#ddd;margin-top:5px}
-    .accordion-btn.active{background:#4a148c;color:#fff}
-    .accordion-content{max-height:0;overflow:hidden;transition:.3s;background:#eee}
+    body { font-family: Arial; margin: 0; background: #f9f9f9 }
+    header, footer {
+      text-align: center;
+      background: #4a148c;
+      color: #fff;
+      padding: 15px;
+    }
+    .section { padding: 20px; max-width: 1200px; margin: auto }
+    .cards { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center }
+    .card { background: #fff; padding: 15px; border-radius: 10px; width: 220px }
+    .btn {
+      background: #4a148c;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .accordion-btn {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      background: #ddd;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+    .accordion-btn.active {
+      background: #4a148c;
+      color: #fff;
+    }
+    .accordion-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: 0.3s;
+      background: #eee;
+      padding: 0 10px;
+    }
   </style>
 </head>
 
@@ -27,7 +56,7 @@
 <header>
   <h1>📚 مركز سكيل سبارك</h1>
   <p>منصة تعليمية داخل Pi Network</p>
-  <button id="loginBtn">تسجيل الدخول بـ Pi</button>
+  <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
 </header>
 
@@ -49,61 +78,93 @@
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
-  if (!window.Pi) {
-    document.body.innerHTML = "<h2 style='text-align:center'>⚠️ افتح التطبيق من Pi Browser فقط</h2>";
-    throw new Error("Not Pi Browser");
-  }
+/* ===============================
+   Pi Browser Safe Initialization
+   =============================== */
 
-  Pi.init({ appName: "SkillSpark Hub", sandbox: true });
+let tries = 0;
+const maxTries = 10;
+
+const checkPi = setInterval(() => {
+  if (window.Pi) {
+    clearInterval(checkPi);
+
+    console.log("✅ Pi Browser detected");
+
+    Pi.init({
+      appName: "SkillSpark Hub",
+      sandbox: true
+    });
+
+    setupApp();
+
+  } else {
+    tries++;
+    if (tries >= maxTries) {
+      clearInterval(checkPi);
+      document.body.innerHTML =
+        "<h2 style='text-align:center;margin-top:40px'>⚠️ افتح التطبيق من Pi Browser فقط</h2>";
+    }
+  }
+}, 300);
+
+/* ===============================
+   App Logic
+   =============================== */
+
+function setupApp() {
 
   const loginBtn = document.getElementById("loginBtn");
   const loginStatus = document.getElementById("loginStatus");
+  const container = document.querySelector(".sections-container");
 
   loginBtn.onclick = async () => {
     try {
       const user = await Pi.request("getCurrentUser");
       loginStatus.innerText = "مرحباً " + (user.username || "Pi User");
       loginBtn.style.display = "none";
-    } catch {
-      alert("فشل تسجيل الدخول");
+    } catch (e) {
+      alert("فشل تسجيل الدخول عبر Pi");
     }
   };
 
-  const container = document.querySelector(".sections-container");
+  function accordion(title, content, parent) {
+    const btn = document.createElement("button");
+    btn.className = "accordion-btn";
+    btn.textContent = title;
 
-  function accordion(title, content, parent){
-    const btn=document.createElement("button");
-    btn.className="accordion-btn";
-    btn.textContent=title;
+    const div = document.createElement("div");
+    div.className = "accordion-content";
+
     parent.appendChild(btn);
-
-    const div=document.createElement("div");
-    div.className="accordion-content";
     parent.appendChild(div);
 
-    if(Array.isArray(content)){
-      content.forEach(i=>{
-        const p=document.createElement("p");
-        p.textContent=i;
+    if (Array.isArray(content)) {
+      content.forEach(item => {
+        const p = document.createElement("p");
+        p.textContent = item;
         div.appendChild(p);
       });
     }
 
-    btn.onclick=()=>{
+    btn.onclick = () => {
       btn.classList.toggle("active");
-      div.style.maxHeight=div.style.maxHeight?null:div.scrollHeight+"px";
-    }
+      div.style.maxHeight = div.style.maxHeight
+        ? null
+        : div.scrollHeight + "px";
+    };
   }
 
   fetch("data.json")
-    .then(r=>r.json())
-    .then(data=>{
-      for(const k in data){
-        const s=document.createElement("div");
-        accordion(k, data[k].الفروع || [], s);
-        container.appendChild(s);
+    .then(res => res.json())
+    .then(data => {
+      for (const section in data) {
+        const wrapper = document.createElement("div");
+        accordion(section, data[section].الفروع || [], wrapper);
+        container.appendChild(wrapper);
       }
     });
+}
 </script>
 
 </body>
