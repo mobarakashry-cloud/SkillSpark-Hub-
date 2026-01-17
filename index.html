@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SkillSpark Hub</title>
 
-  <!-- CSS -->
   <link rel="stylesheet" href="defaults.css">
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
@@ -25,17 +24,6 @@
       border-bottom-right-radius: 20px;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 26px;
-    }
-
-    header p {
-      margin: 8px 0 16px;
-      opacity: 0.9;
-      font-size: 14px;
-    }
-
     .btn {
       background: white;
       color: #4A148C;
@@ -46,15 +34,9 @@
       cursor: pointer;
     }
 
-    #loginStatus {
-      margin-top: 10px;
-      font-size: 13px;
-      opacity: 0.9;
-    }
-
     .notice {
       font-size: 12px;
-      opacity: 0.85;
+      opacity: 0.9;
       margin-top: 6px;
     }
 
@@ -62,20 +44,18 @@
       padding: 20px 16px;
     }
 
-    .section h2 {
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-
-    .sections-container {
-      max-width: 900px;
-      margin: auto;
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .accordion {
       background: white;
       border-radius: 16px;
-      padding: 14px 16px;
+      padding: 14px;
       margin-bottom: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       cursor: pointer;
@@ -85,12 +65,6 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .accordion-header h3 {
-      margin: 0;
-      font-size: 16px;
-      color: #4A148C;
     }
 
     .accordion-content {
@@ -137,15 +111,26 @@
   <div class="notice" id="piNotice">⏳ جاري التحقق من Pi Browser...</div>
 </header>
 
+<section class="section" id="welcomeBox" style="display:none">
+  <div class="card">
+    <h3>👋 مرحباً <span id="userName"></span></h3>
+    <p>ابدأ رحلتك التعليمية اليوم 👇</p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>🔮 مقترح لك اليوم</h2>
+  <div class="card" id="suggestionBox">جاري التحميل...</div>
+</section>
+
 <section class="section">
   <h2>📂 الأقسام التعليمية</h2>
-  <div class="sections-container"></div>
+  <div id="sections"></div>
 </section>
 
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
-/* Pi SDK */
 let piReady = false;
 const piNotice = document.getElementById("piNotice");
 const loginBtn = document.getElementById("loginBtn");
@@ -168,61 +153,45 @@ const waitForPi = setInterval(() => {
 
 loginBtn.onclick = async () => {
   if (!piReady) return alert("افتح التطبيق من Pi Browser");
-  try {
-    const auth = await Pi.authenticate(["username"]);
-    loginStatus.innerText = "مرحباً " + auth.user.username;
-    loginBtn.style.display = "none";
-  } catch {
-    alert("تم إلغاء تسجيل الدخول");
-  }
+  const auth = await Pi.authenticate(["username"]);
+  loginStatus.innerText = "مرحباً " + auth.user.username;
+  document.getElementById("userName").innerText = auth.user.username;
+  document.getElementById("welcomeBox").style.display = "block";
+  loginBtn.style.display = "none";
 };
 
-/* Load Sections */
-function loadSections() {
-  const container = document.querySelector(".sections-container");
-  fetch("data.json")
-    .then(res => res.json())
-    .then(data => {
-      Object.keys(data).forEach(name => {
-        const section = data[name];
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {
+    const keys = Object.keys(data);
+    const random = keys[Math.floor(Math.random() * keys.length)];
+    document.getElementById("suggestionBox").innerHTML =
+      `<strong>${random.replace(/_/g," ")}</strong><br>${data[random].الوصف}`;
 
-        const acc = document.createElement("div");
-        acc.className = "accordion";
-
-        acc.innerHTML = `
-          <div class="accordion-header">
-            <h3>${name.replace(/_/g," ")}</h3>
-            <span>⬇️</span>
-          </div>
-          <div class="accordion-content">
-            <p>${section.الوصف || ""}</p>
-            <div class="tags"></div>
-          </div>
-        `;
-
-        const tags = acc.querySelector(".tags");
-        if (Array.isArray(section.الفروع)) {
-          section.الفروع.forEach(f => {
-            tags.innerHTML += `<span class="tag">${f}</span>`;
-          });
-        } else {
-          Object.keys(section.الفروع || {}).forEach(f => {
-            tags.innerHTML += `<span class="tag">${f.replace(/_/g," ")}</span>`;
-          });
-        }
-
-        acc.onclick = () => {
-          const content = acc.querySelector(".accordion-content");
-          content.style.display =
-            content.style.display === "block" ? "none" : "block";
-        };
-
-        container.appendChild(acc);
-      });
+    const container = document.getElementById("sections");
+    keys.forEach(name => {
+      const s = data[name];
+      const div = document.createElement("div");
+      div.className = "accordion";
+      div.innerHTML = `
+        <div class="accordion-header">
+          <strong>${name.replace(/_/g," ")}</strong>
+          <span>⬇️</span>
+        </div>
+        <div class="accordion-content">
+          <p>${s.الوصف || ""}</p>
+          <div class="tags"></div>
+        </div>`;
+      const tags = div.querySelector(".tags");
+      (Array.isArray(s.الفروع) ? s.الفروع : Object.keys(s.الفروع || {}))
+        .forEach(t => tags.innerHTML += `<span class="tag">${t.replace(/_/g," ")}</span>`);
+      div.onclick = () => {
+        const c = div.querySelector(".accordion-content");
+        c.style.display = c.style.display === "block" ? "none" : "block";
+      };
+      container.appendChild(div);
     });
-}
-
-loadSections();
+  });
 </script>
 
 </body>
