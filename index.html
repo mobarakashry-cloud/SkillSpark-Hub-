@@ -5,55 +5,120 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SkillSpark Hub</title>
 
-  <!-- CSS الأساسي -->
+  <!-- CSS -->
   <link rel="stylesheet" href="defaults.css">
-
-  <!-- Pi SDK -->
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
   <style>
-    .sections-container {
-      max-width: 1200px;
-      margin: auto;
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      background: #f7f5fb;
+      margin: 0;
     }
 
-    .card {
-      margin-bottom: 20px;
-      padding: 15px;
-      border-radius: 12px;
-      background: #fff;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    header {
+      text-align: center;
+      padding: 24px 16px;
+      background: linear-gradient(135deg,#4A148C,#6A1B9A);
+      color: white;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    header p {
+      margin: 8px 0 16px;
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .btn {
+      background: white;
+      color: #4A148C;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 25px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #loginStatus {
+      margin-top: 10px;
+      font-size: 13px;
+      opacity: 0.9;
     }
 
     .notice {
-      font-size: 13px;
+      font-size: 12px;
       opacity: 0.85;
       margin-top: 6px;
     }
 
-    .notice a {
+    .section {
+      padding: 20px 16px;
+    }
+
+    .section h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .sections-container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .accordion {
+      background: white;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+
+    .accordion-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .accordion-header h3 {
+      margin: 0;
+      font-size: 16px;
       color: #4A148C;
-      text-decoration: underline;
-      margin: 0 4px;
     }
 
-    .branch-group {
+    .accordion-content {
+      display: none;
       margin-top: 10px;
+      font-size: 13px;
     }
 
-    .branch-title {
-      font-weight: bold;
-      margin-bottom: 6px;
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
     }
 
     .tag {
       background: #EDE7F6;
       color: #4A148C;
-      padding: 6px 10px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 13px;
-      display: inline-block;
-      margin: 4px;
+      font-size: 12px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 12px;
+      opacity: 0.6;
     }
   </style>
 </head>
@@ -62,51 +127,25 @@
 
 <header>
   <h1>📚 SkillSpark Hub</h1>
-  <p>منصة تعليمية داخل Pi Network</p>
+  <p>تعلم وطور مهاراتك داخل Pi Network</p>
 
   <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
 
-  <!-- رسائل الالتزام (مهمة لـ Pi Review) -->
-  <div class="notice">
-    🔐 نستخدم اسم مستخدم Pi فقط ولا نجمع أو نخزن أي بيانات شخصية
-  </div>
-
-  <div class="notice">
-    📘 هذا التطبيق تعليمي فقط ولا يقدم أي خدمات مالية أو استثمارية
-  </div>
-
-  <div class="notice">
-    باستخدامك للتطبيق، فإنك توافق على
-    <a href="privacy-policy.html">سياسة الخصوصية</a>
-    و
-    <a href="terms-of-service.html">شروط الاستخدام</a>
-  </div>
-
-  <div id="piNotice" class="notice">⏳ جاري التحقق من Pi Browser...</div>
+  <div class="notice">🔐 نستخدم اسم مستخدم Pi فقط</div>
+  <div class="notice">📘 التطبيق تعليمي فقط</div>
+  <div class="notice" id="piNotice">⏳ جاري التحقق من Pi Browser...</div>
 </header>
 
 <section class="section">
-  <h2>🚀 المميزات</h2>
-  <div class="cards">
-    <div class="card">📖 تعليم إسلامي موثوق</div>
-    <div class="card">💻 مهارات رقمية حديثة</div>
-    <div class="card">🧪 علوم مبسطة</div>
-    <div class="card">🛠️ حرف ومهن عملية</div>
-  </div>
-</section>
-
-<section class="section">
-  <h2>📂 الأقسام</h2>
+  <h2>📂 الأقسام التعليمية</h2>
   <div class="sections-container"></div>
 </section>
 
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
-/* ===============================
-   Pi SDK
-   =============================== */
+/* Pi SDK */
 let piReady = false;
 const piNotice = document.getElementById("piNotice");
 const loginBtn = document.getElementById("loginBtn");
@@ -115,35 +154,20 @@ const loginStatus = document.getElementById("loginStatus");
 let attempts = 0;
 const waitForPi = setInterval(() => {
   attempts++;
-
   if (window.Pi) {
     clearInterval(waitForPi);
-
-    Pi.init({
-      appName: "SkillSpark Hub",
-      sandbox: false,
-      onIncompletePaymentFound: payment => {
-        console.log("Incomplete payment found:", payment);
-      }
-    });
-
+    Pi.init({ appName: "SkillSpark Hub", sandbox: false });
     piReady = true;
-    piNotice.innerText = "✅ Pi Browser متصل – يمكنك تسجيل الدخول";
+    piNotice.innerText = "✅ Pi Browser متصل";
   }
-
   if (attempts >= 10 && !piReady) {
     clearInterval(waitForPi);
-    piNotice.innerText =
-      "ℹ️ يمكنك تصفح المحتوى، تسجيل الدخول يتطلب Pi Browser";
+    piNotice.innerText = "ℹ️ التصفح متاح بدون تسجيل";
   }
 }, 300);
 
 loginBtn.onclick = async () => {
-  if (!piReady) {
-    alert("يرجى فتح التطبيق من Pi Browser");
-    return;
-  }
-
+  if (!piReady) return alert("افتح التطبيق من Pi Browser");
   try {
     const auth = await Pi.authenticate(["username"]);
     loginStatus.innerText = "مرحباً " + auth.user.username;
@@ -153,67 +177,49 @@ loginBtn.onclick = async () => {
   }
 };
 
-/* ===============================
-   تحميل الأقسام من data.json
-   =============================== */
+/* Load Sections */
 function loadSections() {
   const container = document.querySelector(".sections-container");
-  container.innerHTML = "";
-
   fetch("data.json")
     .then(res => res.json())
     .then(data => {
-      Object.entries(data).forEach(([sectionName, section]) => {
-        const card = document.createElement("div");
-        card.className = "card";
+      Object.keys(data).forEach(name => {
+        const section = data[name];
 
-        const title = document.createElement("h3");
-        title.textContent = sectionName.replace(/_/g, " ");
-        card.appendChild(title);
+        const acc = document.createElement("div");
+        acc.className = "accordion";
 
-        if (section.الوصف) {
-          const desc = document.createElement("p");
-          desc.textContent = section.الوصف;
-          desc.style.opacity = "0.8";
-          card.appendChild(desc);
-        }
+        acc.innerHTML = `
+          <div class="accordion-header">
+            <h3>${name.replace(/_/g," ")}</h3>
+            <span>⬇️</span>
+          </div>
+          <div class="accordion-content">
+            <p>${section.الوصف || ""}</p>
+            <div class="tags"></div>
+          </div>
+        `;
 
-        const branches = section.الفروع;
-
-        if (Array.isArray(branches)) {
-          branches.forEach(item => {
-            const tag = document.createElement("span");
-            tag.className = "tag";
-            tag.textContent = item;
-            card.appendChild(tag);
+        const tags = acc.querySelector(".tags");
+        if (Array.isArray(section.الفروع)) {
+          section.الفروع.forEach(f => {
+            tags.innerHTML += `<span class="tag">${f}</span>`;
+          });
+        } else {
+          Object.keys(section.الفروع || {}).forEach(f => {
+            tags.innerHTML += `<span class="tag">${f.replace(/_/g," ")}</span>`;
           });
         }
 
-        if (typeof branches === "object") {
-          Object.entries(branches).forEach(([branchName, items]) => {
-            const group = document.createElement("div");
-            group.className = "branch-group";
+        acc.onclick = () => {
+          const content = acc.querySelector(".accordion-content");
+          content.style.display =
+            content.style.display === "block" ? "none" : "block";
+        };
 
-            const bTitle = document.createElement("div");
-            bTitle.className = "branch-title";
-            bTitle.textContent = branchName.replace(/_/g, " ");
-            group.appendChild(bTitle);
-
-            items.forEach(item => {
-              const tag = document.createElement("span");
-              tag.className = "tag";
-              tag.textContent = item;
-              group.appendChild(tag);
-            });
-
-            card.appendChild(group);
-          });
-        }
-
-        container.appendChild(card);
+        container.appendChild(acc);
       });
-    })
-    .catch(err => console.error("Error loading data.json", err));
+    });
 }
 
 loadSections();
