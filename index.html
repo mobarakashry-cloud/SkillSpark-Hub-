@@ -18,7 +18,11 @@
     }
 
     .card {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .notice {
@@ -32,6 +36,25 @@
       text-decoration: underline;
       margin: 0 4px;
     }
+
+    .branch-group {
+      margin-top: 10px;
+    }
+
+    .branch-title {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .tag {
+      background: #EDE7F6;
+      color: #4A148C;
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      display: inline-block;
+      margin: 4px;
+    }
   </style>
 </head>
 
@@ -44,17 +67,15 @@
   <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
 
-  <!-- إشعار الخصوصية -->
+  <!-- رسائل الالتزام (مهمة لـ Pi Review) -->
   <div class="notice">
-    🔐 نستخدم اسم مستخدم Pi فقط ولا نجمع أي بيانات شخصية أخرى
+    🔐 نستخدم اسم مستخدم Pi فقط ولا نجمع أو نخزن أي بيانات شخصية
   </div>
 
-  <!-- إقرار طبيعة التطبيق -->
   <div class="notice">
     📘 هذا التطبيق تعليمي فقط ولا يقدم أي خدمات مالية أو استثمارية
   </div>
 
-  <!-- روابط السياسات -->
   <div class="notice">
     باستخدامك للتطبيق، فإنك توافق على
     <a href="privacy-policy.html">سياسة الخصوصية</a>
@@ -68,10 +89,10 @@
 <section class="section">
   <h2>🚀 المميزات</h2>
   <div class="cards">
-    <div class="card">📖 تعليم إسلامي</div>
-    <div class="card">💻 مهارات رقمية</div>
-    <div class="card">🧪 علوم</div>
-    <div class="card">🛠️ حرف ومهن</div>
+    <div class="card">📖 تعليم إسلامي موثوق</div>
+    <div class="card">💻 مهارات رقمية حديثة</div>
+    <div class="card">🧪 علوم مبسطة</div>
+    <div class="card">🛠️ حرف ومهن عملية</div>
   </div>
 </section>
 
@@ -124,23 +145,16 @@ loginBtn.onclick = async () => {
   }
 
   try {
-    const auth = await Pi.authenticate(
-      ["username"],
-      () => {
-        console.log("Pi authentication requested");
-      }
-    );
-
+    const auth = await Pi.authenticate(["username"]);
     loginStatus.innerText = "مرحباً " + auth.user.username;
     loginBtn.style.display = "none";
-
-  } catch (e) {
+  } catch {
     alert("تم إلغاء تسجيل الدخول");
   }
 };
 
 /* ===============================
-   تحميل الأقسام
+   تحميل الأقسام من data.json
    =============================== */
 function loadSections() {
   const container = document.querySelector(".sections-container");
@@ -149,9 +163,7 @@ function loadSections() {
   fetch("data.json")
     .then(res => res.json())
     .then(data => {
-      Object.keys(data).forEach(sectionName => {
-        const section = data[sectionName];
-
+      Object.entries(data).forEach(([sectionName, section]) => {
         const card = document.createElement("div");
         card.className = "card";
 
@@ -166,33 +178,42 @@ function loadSections() {
           card.appendChild(desc);
         }
 
-        const branchesWrap = document.createElement("div");
-        branchesWrap.style.display = "flex";
-        branchesWrap.style.flexWrap = "wrap";
-        branchesWrap.style.gap = "8px";
-        branchesWrap.style.marginTop = "10px";
+        const branches = section.الفروع;
 
-        const branches = section.الفروع || {};
+        if (Array.isArray(branches)) {
+          branches.forEach(item => {
+            const tag = document.createElement("span");
+            tag.className = "tag";
+            tag.textContent = item;
+            card.appendChild(tag);
+          });
+        }
 
-        Object.keys(branches).forEach(branchName => {
-          const tag = document.createElement("span");
-          tag.textContent = branchName.replace(/_/g, " ");
-          tag.style.background = "#EDE7F6";
-          tag.style.color = "#4A148C";
-          tag.style.padding = "6px 10px";
-          tag.style.borderRadius = "20px";
-          tag.style.fontSize = "13px";
+        if (typeof branches === "object") {
+          Object.entries(branches).forEach(([branchName, items]) => {
+            const group = document.createElement("div");
+            group.className = "branch-group";
 
-          branchesWrap.appendChild(tag);
-        });
+            const bTitle = document.createElement("div");
+            bTitle.className = "branch-title";
+            bTitle.textContent = branchName.replace(/_/g, " ");
+            group.appendChild(bTitle);
 
-        card.appendChild(branchesWrap);
+            items.forEach(item => {
+              const tag = document.createElement("span");
+              tag.className = "tag";
+              tag.textContent = item;
+              group.appendChild(tag);
+            });
+
+            card.appendChild(group);
+          });
+        }
+
         container.appendChild(card);
       });
     })
-    .catch(err => {
-      console.error("Error loading data.json", err);
-    });
+    .catch(err => console.error("Error loading data.json", err));
 }
 
 loadSections();
