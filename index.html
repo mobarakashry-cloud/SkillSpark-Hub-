@@ -6,75 +6,20 @@
 <title>SkillSpark Hub</title>
 
 <style>
-body{
-  font-family: system-ui;
-  background:#f6f4fb;
-  margin:0;
-}
-header{
-  background:linear-gradient(135deg,#4A148C,#6A1B9A);
-  color:#fff;
-  text-align:center;
-  padding:25px;
-  border-radius:0 0 20px 20px;
-}
+body{font-family:system-ui;background:#f6f4fb;margin:0}
+header{background:linear-gradient(135deg,#4A148C,#6A1B9A);color:#fff;text-align:center;padding:25px;border-radius:0 0 20px 20px}
 .section{padding:16px}
-.card{
-  background:#fff;
-  padding:14px;
-  border-radius:16px;
-  margin-bottom:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,.05)
-}
-.btn{
-  background:#4A148C;
-  color:#fff;
-  border:none;
-  padding:12px 18px;
-  border-radius:22px;
-  cursor:pointer;
-}
-.accordion{
-  background:#fff;
-  border-radius:16px;
-  padding:14px;
-  margin-bottom:10px;
-  cursor:pointer;
-}
-.accordion-header{
-  display:flex;
-  justify-content:space-between;
-}
-.accordion-content{
-  display:none;
-  margin-top:10px;
-}
-.lesson{
-  background:#ede7f6;
-  padding:10px;
-  border-radius:12px;
-  margin-top:6px;
-  font-size:13px;
-}
-input,textarea,select{
-  width:100%;
-  padding:10px;
-  margin:6px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-}
-.ai-box{
-  background:#f3e5f5;
-  padding:12px;
-  border-radius:14px;
-  margin-top:8px;
-}
-footer{
-  text-align:center;
-  font-size:12px;
-  opacity:.6;
-  padding:12px;
-}
+.card{background:#fff;padding:14px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 10px rgba(0,0,0,.05)}
+.btn{background:#4A148C;color:#fff;border:none;padding:12px 18px;border-radius:22px;cursor:pointer;margin:4px}
+.accordion{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px}
+.accordion-header{display:flex;justify-content:space-between;cursor:pointer}
+.accordion-content{display:none;margin-top:10px}
+.lesson{background:#ede7f6;padding:10px;border-radius:12px;margin-top:8px;font-size:13px}
+input,textarea,select{width:100%;padding:10px;margin:6px 0;border-radius:10px;border:1px solid #ccc}
+.ai-box{background:#f3e5f5;padding:12px;border-radius:14px;margin-top:8px}
+.rate span{cursor:pointer;font-size:16px;margin:0 2px}
+img{max-width:100%;border-radius:10px;margin-top:6px}
+footer{text-align:center;font-size:12px;opacity:.6;padding:12px}
 </style>
 </head>
 
@@ -85,19 +30,20 @@ footer{
 <p>تعلم – شارك – طوّر مهارتك</p>
 </header>
 
-<section class="section">
+<section class="section" id="roleBox"></section>
+
+<section class="section" id="addBox" style="display:none">
 <div class="card">
-<h3>➕ أضف درس جديد</h3>
+<h3>➕ إضافة درس (للمعلّمين)</h3>
 <select id="lessonSection">
 <option>اللغات</option>
 <option>العلوم</option>
 <option>التكنولوجيا</option>
-<option>المهارات الرقمية</option>
-<option>المهن الحرفية</option>
 </select>
 <input id="lessonTitle" placeholder="عنوان الدرس">
-<input id="lessonLink" placeholder="رابط (يوتيوب / مقال)">
-<textarea id="lessonDesc" placeholder="وصف مختصر"></textarea>
+<input id="lessonVideo" placeholder="رابط فيديو (YouTube)">
+<input id="lessonImage" placeholder="رابط صورة">
+<textarea id="lessonDesc" placeholder="شرح مختصر"></textarea>
 <button class="btn" onclick="addLesson()">نشر الدرس</button>
 </div>
 </section>
@@ -107,83 +53,104 @@ footer{
 <div id="sections"></div>
 </section>
 
-<footer>© 2025 SkillSpark Hub</footer>
+<footer>© 2025 SkillSpark Hub – Pi Ready</footer>
 
 <script>
+let role=localStorage.getItem("role");
+
 const sectionsData={
   "اللغات":[],
   "العلوم":[],
-  "التكنولوجيا":[],
-  "المهارات الرقمية":[],
-  "المهن الحرفية":[]
+  "التكنولوجيا":[]
 };
 
-function load(){
-  const saved=JSON.parse(localStorage.getItem("lessons")||"{}");
-  Object.assign(sectionsData,saved);
-  render();
+function initRole(){
+  const box=document.getElementById("roleBox");
+  if(role){
+    box.innerHTML=`<div class="card">👤 دورك: <strong>${role}</strong></div>`;
+    if(role==="معلم") document.getElementById("addBox").style.display="block";
+    return;
+  }
+  box.innerHTML=`
+  <div class="card">
+    <h3>اختر دورك</h3>
+    <button class="btn" onclick="setRole('متعلم')">👩‍🎓 متعلم</button>
+    <button class="btn" onclick="setRole('معلم')">👨‍🏫 معلّم</button>
+  </div>`;
 }
 
-function save(){
-  localStorage.setItem("lessons",JSON.stringify(sectionsData));
-}
-
-function addLesson(){
-  const s=document.getElementById("lessonSection").value;
-  const t=document.getElementById("lessonTitle").value;
-  const l=document.getElementById("lessonLink").value;
-  const d=document.getElementById("lessonDesc").value;
-
-  if(!t) return alert("اكتب عنوان الدرس");
-
-  sectionsData[s].push({t,l,d});
-  save();
-  render();
-  alert("تم إضافة الدرس ✅");
+function setRole(r){
+  role=r;
+  localStorage.setItem("role",r);
+  initRole();
 }
 
 function aiExplain(text){
-  return `🤖 شرح مبسط:
-${text || "هذا درس يساعدك على تعلم مهارة جديدة خطوة بخطوة. حاول مشاهدة الرابط ثم التطبيق العملي."}`;
+  return `🤖 شرح مبسّط:<br>${text}<br>✅ تمرين عملي + تطبيق مباشر`;
 }
+
+function addLesson(){
+  const s=lessonSection.value;
+  const t=lessonTitle.value;
+  const d=lessonDesc.value;
+  if(!t||!d) return alert("أكمل البيانات");
+  sectionsData[s].push({
+    t,d,
+    v:lessonVideo.value,
+    i:lessonImage.value,
+    rate:0,flag:0,hidden:false
+  });
+  save();render();
+  lessonTitle.value=lessonDesc.value=lessonVideo.value=lessonImage.value="";
+}
+
+function rateLesson(ls,val){ls.rate=val;save();render();}
+function flagLesson(ls){ls.flag++;if(ls.flag>=3)ls.hidden=true;save();render();}
+
+function save(){localStorage.setItem("lessons",JSON.stringify(sectionsData));}
+function load(){Object.assign(sectionsData,JSON.parse(localStorage.getItem("lessons")||"{}"));}
 
 function render(){
   const c=document.getElementById("sections");
   c.innerHTML="";
   Object.keys(sectionsData).forEach(sec=>{
-    const div=document.createElement("div");
-    div.className="accordion";
-    div.innerHTML=`
-      <div class="accordion-header">
-        <strong>${sec}</strong><span>⬇️</span>
-      </div>
-      <div class="accordion-content"></div>
-    `;
-    const content=div.querySelector(".accordion-content");
+    const a=document.createElement("div");
+    a.className="accordion";
+    a.innerHTML=`<div class="accordion-header"><strong>${sec}</strong><span>⬇️</span></div><div class="accordion-content"></div>`;
+    const cont=a.querySelector(".accordion-content");
 
     sectionsData[sec].forEach(ls=>{
-      const l=document.createElement("div");
-      l.className="lesson";
-      l.innerHTML=`
-        <strong>${ls.t}</strong><br>
-        <a href="${ls.l}" target="_blank">🔗 فتح الدرس</a>
-        <p>${ls.d}</p>
-        <div class="ai-box">${aiExplain(ls.d)}</div>
-      `;
-      content.appendChild(l);
+      if(ls.hidden) return;
+      const d=document.createElement("div");
+      d.className="lesson";
+      d.innerHTML=`
+      <strong>${ls.t}</strong><br>
+      ${ls.v?`<a href="${ls.v}" target="_blank">🎥 فيديو</a>`:""}
+      ${ls.i?`<img src="${ls.i}">`:""}
+      <p>${ls.d}</p>
+      <div class="ai-box">${aiExplain(ls.d)}</div>
+      <div class="rate">
+        ⭐ <span onclick="rateLesson(ls,1)">1</span>
+        <span onclick="rateLesson(ls,2)">2</span>
+        <span onclick="rateLesson(ls,3)">3</span>
+        <span onclick="rateLesson(ls,4)">4</span>
+        <span onclick="rateLesson(ls,5)">5</span>
+        🚩 <span onclick="flagLesson(ls)">إبلاغ</span>
+      </div>`;
+      cont.appendChild(d);
     });
 
-    div.onclick=()=>{
-      const open=content.style.display==="block";
-      content.style.display=open?"none":"block";
-      div.querySelector("span").innerText=open?"⬇️":"⬆️";
+    a.querySelector(".accordion-header").onclick=()=>{
+      const o=cont.style.display==="block";
+      cont.style.display=o?"none":"block";
     };
-
-    c.appendChild(div);
+    c.appendChild(a);
   });
 }
 
 load();
+initRole();
+render();
 </script>
 
 </body>
