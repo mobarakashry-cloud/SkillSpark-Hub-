@@ -1,219 +1,188 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SkillSpark Hub</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillSpark Hub</title>
 
-  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
-  <style>
-    body {
-      font-family: system-ui;
-      background: #f7f5fb;
-      margin: 0;
-    }
-
-    header {
-      text-align: center;
-      padding: 28px 16px;
-      background: linear-gradient(135deg,#4A148C,#6A1B9A);
-      color: white;
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
-    }
-
-    .btn {
-      background: white;
-      color: #4A148C;
-      border: none;
-      padding: 14px 22px;
-      border-radius: 25px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-
-    .section { padding: 20px 16px; }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      font-size: 14px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background: #e0e0e0;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg,#6A1B9A,#8E24AA);
-      width: 0%;
-      transition: 0.4s;
-    }
-
-    .accordion {
-      background: white;
-      border-radius: 16px;
-      padding: 14px;
-      margin-bottom: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      cursor: pointer;
-    }
-
-    .accordion-header {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .accordion-content {
-      display: none;
-      margin-top: 10px;
-      font-size: 13px;
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tag {
-      background: #EDE7F6;
-      color: #4A148C;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 16px;
-      font-size: 12px;
-      opacity: 0.6;
-    }
-  </style>
+<style>
+body{
+  font-family: system-ui;
+  margin:0;
+  background:#f7f5fb;
+}
+header{
+  text-align:center;
+  padding:30px 16px;
+  background:linear-gradient(135deg,#4A148C,#6A1B9A);
+  color:white;
+  border-radius:0 0 20px 20px;
+}
+.btn{
+  background:white;
+  color:#4A148C;
+  border:none;
+  padding:14px 22px;
+  border-radius:25px;
+  cursor:pointer;
+  margin-top:10px;
+}
+.section{padding:20px 16px}
+.card{
+  background:white;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
+}
+.accordion{
+  background:white;
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.05);
+  cursor:pointer;
+}
+.accordion-header{
+  display:flex;
+  justify-content:space-between;
+}
+.accordion-content{
+  display:none;
+  margin-top:10px;
+}
+.tag{
+  display:inline-block;
+  background:#EDE7F6;
+  color:#4A148C;
+  padding:6px 12px;
+  border-radius:20px;
+  font-size:12px;
+  margin:4px;
+}
+footer{
+  text-align:center;
+  padding:16px;
+  font-size:12px;
+  opacity:.6;
+}
+.progress{
+  color:#4A148C;
+  font-size:13px;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h1>📚 SkillSpark Hub</h1>
-  <p>تعلم مهارة جديدة كل يوم داخل Pi Network</p>
-  <button class="btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">
-    🚀 ابدأ الآن
-  </button>
+<h1>📚 SkillSpark Hub</h1>
+<p>تعلم مهارة جديدة كل يوم داخل Pi Network</p>
+<button class="btn" onclick="scrollToDash()">🚀 ابدأ الآن</button>
+<div id="piNotice">⏳ التحقق من Pi Browser...</div>
 </header>
 
-<!-- Dashboard -->
 <section class="section" id="dashboard">
-  <h2>📊 لوحتك اليوم</h2>
-
-  <div class="card" id="dashboardMessage"></div>
-
-  <div class="card">
-    <strong>📈 تقدمك</strong>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill"></div>
-    </div>
-    <div id="progressText" style="margin-top:6px;font-size:13px"></div>
-  </div>
-
-  <div class="card" id="nextStep"></div>
+<h2>📊 لوحتك اليوم</h2>
+<div class="card" id="dashMsg">جاري التحليل...</div>
+<div class="card" id="dashNext">...</div>
 </section>
 
-<!-- Suggestion -->
 <section class="section">
-  <h2>🔮 مقترح لك اليوم</h2>
-  <div class="card" id="suggestionBox">جاري التحميل...</div>
+<h2>🔮 مقترح لك اليوم</h2>
+<div class="card" id="suggestionBox">تحميل...</div>
+<div class="progress" id="progressBox"></div>
 </section>
 
-<!-- Sections -->
 <section class="section">
-  <h2>📂 الأقسام التعليمية</h2>
-  <div id="sections"></div>
+<h2>📂 الأقسام التعليمية</h2>
+<div id="sections"></div>
 </section>
 
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
-function saveInterest(n){localStorage.setItem("interest",n)}
-function markVisited(n){
-  let v=JSON.parse(localStorage.getItem("visited")||"[]");
-  if(!v.includes(n)){v.push(n);localStorage.setItem("visited",JSON.stringify(v))}
+/* ===== Pi Check ===== */
+let tries=0;
+const piNotice=document.getElementById("piNotice");
+const piCheck=setInterval(()=>{
+  tries++;
+  if(window.Pi){
+    clearInterval(piCheck);
+    Pi.init({appName:"SkillSpark Hub"});
+    piNotice.innerText="✅ Pi Browser متصل";
+  }
+  if(tries>8){
+    clearInterval(piCheck);
+    piNotice.innerText="ℹ️ التصفح بدون تسجيل";
+  }
+},300);
+
+/* ===== Utils ===== */
+function scrollToDash(){
+  document.getElementById("dashboard").scrollIntoView({behavior:"smooth"});
+}
+function saveInterest(v){localStorage.setItem("interest",v)}
+function markVisited(v){
+  let a=JSON.parse(localStorage.getItem("visited")||"[]");
+  if(!a.includes(v)){a.push(v);localStorage.setItem("visited",JSON.stringify(a))}
 }
 
-function updateUI(total){
-  const visited=JSON.parse(localStorage.getItem("visited")||"[]");
-  const interest=localStorage.getItem("interest");
-
-  document.getElementById("dashboardMessage").innerText =
-    visited.length===0
-    ? "👋 ابدأ رحلتك باختيار أي قسم"
-    : `🔥 ممتاز! زرت ${visited.length} أقسام`;
-
-  document.getElementById("nextStep").innerText =
-    interest
-    ? `➡️ كمّل في مجال ${interest.replace(/_/g," ")}`
-    : "🌱 جرّب قسم جديد";
-
-  const percent = total ? Math.round((visited.length/total)*100) : 0;
-  document.getElementById("progressFill").style.width = percent+"%";
-  document.getElementById("progressText").innerText =
-    `${visited.length} / ${total} (${percent}%)`;
-}
-
+/* ===== Load Data ===== */
 fetch("data.json").then(r=>r.json()).then(data=>{
-  const keys=Object.keys(data);
-  const pick=localStorage.getItem("interest")||keys[Math.floor(Math.random()*keys.length)];
+const keys=Object.keys(data);
 
-  document.getElementById("suggestionBox").innerHTML =
-    `<strong>${pick.replace(/_/g," ")}</strong><br>${data[pick].الوصف||""}`;
+/* ===== Smart Daily Suggestion ===== */
+const today=new Date().toDateString();
+let suggested;
+if(localStorage.getItem("suggestionDay")==today){
+  suggested=localStorage.getItem("dailySuggestion");
+}else{
+  suggested=localStorage.getItem("interest")||keys[Math.floor(Math.random()*keys.length)];
+  localStorage.setItem("dailySuggestion",suggested);
+  localStorage.setItem("suggestionDay",today);
+}
+document.getElementById("suggestionBox").innerHTML=
+  `<strong>${suggested}</strong><br>${data[suggested].الوصف||""}`;
 
-  const container=document.getElementById("sections");
+/* ===== Dashboard ===== */
+const visited=JSON.parse(localStorage.getItem("visited")||"[]");
+document.getElementById("progressBox").innerText=
+  `📈 تقدمك ${visited.length} / ${keys.length}`;
 
-  keys.forEach(k=>{
-    const d=data[k];
-    const acc=document.createElement("div");
-    acc.className="accordion";
+document.getElementById("dashMsg").innerText=
+  visited.length
+  ? `🔥 ممتاز! زُرت ${visited.length} أقسام`
+  : "👋 ابدأ رحلتك باختيار أي قسم";
 
-    acc.innerHTML=`
-      <div class="accordion-header">
-        <strong>${k.replace(/_/g," ")}</strong>
-        <span>⬇️</span>
-      </div>
-      <div class="accordion-content">
-        <p>${d.الوصف||""}</p>
-        <div class="tags"></div>
-      </div>
-    `;
+document.getElementById("dashNext").innerText=
+  localStorage.getItem("interest")
+  ? `➡️ كمّل في ${localStorage.getItem("interest")}`
+  : "🌱 جرّب قسم جديد";
 
-    acc.onclick=()=>{
-      saveInterest(k);
-      markVisited(k);
-      const c=acc.querySelector(".accordion-content");
-      const open=c.style.display==="block";
-      c.style.display=open?"none":"block";
-      updateUI(keys.length);
-    };
-
-    const tags=acc.querySelector(".tags");
-    (Array.isArray(d.الفروع)?d.الفروع:Object.keys(d.الفروع||{}))
-      .forEach(t=>tags.innerHTML+=`<span class="tag">${t.replace(/_/g," ")}</span>`);
-
-    container.appendChild(acc);
-  });
-
-  updateUI(keys.length);
+/* ===== Sections ===== */
+const container=document.getElementById("sections");
+keys.forEach(k=>{
+  const acc=document.createElement("div");
+  acc.className="accordion";
+  acc.innerHTML=`
+    <div class="accordion-header">
+      <strong>${k}</strong><span>⬇️</span>
+    </div>
+    <div class="accordion-content">${data[k].الوصف||""}</div>
+  `;
+  acc.onclick=()=>{
+    saveInterest(k);
+    markVisited(k);
+    const c=acc.querySelector(".accordion-content");
+    const open=c.style.display=="block";
+    c.style.display=open?"none":"block";
+    acc.querySelector("span").innerText=open?"⬇️":"⬆️";
+  };
+  container.appendChild(acc);
+});
 });
 </script>
 
