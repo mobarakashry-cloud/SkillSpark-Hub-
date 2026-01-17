@@ -56,8 +56,14 @@
 <header>
   <h1>📚 مركز سكيل سبارك</h1>
   <p>منصة تعليمية داخل Pi Network</p>
+
   <button id="loginBtn" class="btn">تسجيل الدخول بـ Pi</button>
   <div id="loginStatus">غير مسجل</div>
+
+  <!-- حالة Pi Browser -->
+  <div id="piStatus" style="margin-top:10px;font-size:14px">
+    ⏳ جاري التحقق من Pi Browser...
+  </div>
 </header>
 
 <section class="section">
@@ -79,21 +85,23 @@
 
 <script>
 /* ===============================
-   Pi Browser Safe Initialization
+   Safe Pi Browser Detection
    =============================== */
 
 let tries = 0;
 const maxTries = 10;
+const piStatus = document.getElementById("piStatus");
 
 const checkPi = setInterval(() => {
   if (window.Pi) {
     clearInterval(checkPi);
 
     console.log("✅ Pi Browser detected");
+    piStatus.innerText = "✅ تم الاتصال بـ Pi Browser";
 
     Pi.init({
       appName: "SkillSpark Hub",
-      sandbox: true
+      sandbox: true   // خليها true حالياً – production لاحقاً false
     });
 
     setupApp();
