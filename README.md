@@ -1,98 +1,106 @@
-# 📚 مركز سكيل سبارك / SkillSpark Hub
-منصة تعليمية ذكية مبنية داخل Pi App Studio  
-A smart educational platform built inside Pi App Studio
+# 📚 SkillSpark Hub | مركز سكيل سبارك
 
-## 🚀 المميزات / Features
-
-### 📖 التعليم الإسلامي / Islamic Education
-تعليم قائم على القرآن الكريم والسنة النبوية فقط، بدون أي محتوى مخالف.  
-Education based on the Quran and Sunnah only, without any conflicting content.
-
-### 💻 المهارات الرقمية / Digital Skills
-برمجة، تصميم، أوفيس، مهارات تقنية حديثة تناسب سوق العمل.  
-Programming, design, Office, modern technical skills suitable for the job market.
-
-### 🧪 العلوم / Sciences
-الفيزياء، الكيمياء، الأحياء، علم الفلك بطريقة مبسطة وسهلة.  
-Physics, Chemistry, Biology, Astronomy explained in a simple and easy way.
-
-### 🛠️ الحرف والمهن / Crafts & Professions
-مهارات عملية ومهنية تساعد على التعلم والدخول لسوق العمل.  
-Practical and professional skills that help learning and entering the job market.
-
-### 🤖 الذكاء الاصطناعي / AI Integration
-تحسين المحتوى التعليمي واقتراح مسارات تعلم ذكية لكل مستخدم.  
-Enhancing educational content and suggesting smart learning paths for each user.
-
-### 💰 تحقيق الدخل / Monetization
-إنشاء محتوى مدفوع وإعلانات داخل التطبيق بما يتوافق مع الشريعة الإسلامية.  
-Creating paid content and ads within the app in compliance with Sharia.
+منصة تعليمية ذكية تعمل داخل **Pi Network** وتهدف إلى تمكين المستخدمين معرفيًا ومهاريًا من خلال محتوى تعليمي منظم وآمن داخل Pi Browser.  
+A smart educational platform running inside Pi Network, focused on knowledge and skill empowerment.
 
 ---
 
-## 📂 الأقسام والفروع / Sections & Branches
+## 🚀 المميزات | Features
 
-### 📖 التعليم الديني / Islamic Knowledge
-تفسير، أحاديث، فقه، علوم القرآن.  
-Tafsir, Hadiths, Fiqh, Quran Sciences  
+### 📖 التعليم الإسلامي | Islamic Education
+تعليم قائم على القرآن الكريم والسنة النبوية الصحيحة فقط، دون أي محتوى مخالف أو جدلي.  
+Education based strictly on the Quran and authentic Sunnah.
 
-- **التفسير / Tafsir:** سورة البقرة، آل عمران، إلخ  
-  Surah Al-Baqarah, Al-Imran, etc.  
-- **الأحاديث / Hadiths:** صحيح البخاري، صحيح مسلم، إلخ  
-  Sahih Bukhari, Sahih Muslim, etc.
+### 💻 المهارات الرقمية | Digital Skills
+برمجة، تصميم، مهارات تقنية حديثة تساعد على دخول سوق العمل.  
+Programming, design, and modern technical skills for today’s job market.
 
-### 💻 المهارات الرقمية / Digital Skills
-برمجة، تصميم، Office، تطوير تطبيقات  
-Programming, Design, Office, App Development
+### 🧪 العلوم | Sciences
+الفيزياء، الكيمياء، الأحياء، وعلم الفلك بأسلوب مبسط وسهل الفهم.  
+Physics, chemistry, biology, and astronomy explained simply.
 
-### 🧪 العلوم / Sciences
-فيزياء، كيمياء، أحياء، فلك  
-Physics, Chemistry, Biology, Astronomy
+### 🛠️ الحرف والمهن | Crafts & Professions
+مهارات عملية ومهنية تساعد على التعلم والعمل الحر.  
+Practical and professional skills for real-world application.
 
-### 🌍 تعلم اللغات / Language Learning
-إنجليزي، فرنسي، إسباني، صيني  
-English, French, Spanish, Chinese
+### 🤖 الذكاء الاصطناعي | AI (Future-ready)
+اقتراح مسارات تعلم ذكية وتحسين تجربة المستخدم مستقبلًا.  
+Smart learning paths and enhanced user experience (planned).
 
-### 💍 الجواز الحلال / Halal Marriage
-إدارة الملفات والمطابقات الشرعية للمستخدمين  
-Manage users and Sharia-compliant matches
-
----
-
-## 🛠️ الأدوات التقنية / Technical Tools
-
-### الواجهة الأمامية / Frontend
-HTML, CSS, JavaScript  
-
-### الواجهة الخلفية / Backend
-Node.js + Express (future-ready)
-
-### قاعدة البيانات / Database
-MongoDB / Firebase (Future support)
-
-### التكامل / Integration
-Pi SDK + Pi authentication only
+### 💰 تحقيق الدخل | Monetization (Planned)
+محتوى مدفوع وإعلانات تعليمية **بما يتوافق مع الشريعة الإسلامية**.  
+Sharia-compliant educational monetization (planned).
 
 ---
 
-## 🔐 الخصوصية والالتزام / Privacy & Compliance
-- لا يتم جمع أي بيانات شخصية سوى اسم مستخدم Pi عند تسجيل الدخول
+## 📂 الأقسام | Sections
+
+### 📖 التعليم الديني
+- تفسير مبسط للقرآن
+- أحاديث صحيحة
+- فقه وأصول العقيدة
+
+### 💻 المهارات الرقمية
+- HTML / CSS / JavaScript  
+- تصميم وواجهات  
+- مهارات رقمية عامة
+
+### 🧪 العلوم
+- فيزياء
+- كيمياء
+- أحياء
+- فلك
+
+### 🌍 تعلم اللغات
+- الإنجليزية
+- الفرنسية
+- الإسبانية
+- الصينية
+
+### 💍 الجواز الحلال
+منظومة توفيق شرعية بإشراف إداري كامل وبدون أي تواصل مخالف.  
+Sharia-compliant marriage facilitation with full moderation.
+
+---
+
+## 🛠️ البنية التقنية | Technical Stack
+
+**Frontend**
+- HTML
+- CSS
+- JavaScript
+
+**Backend**
+- Node.js + Express (future-ready)
+
+**Database**
+- MongoDB / Firebase (future)
+
+**Integration**
+- Pi SDK
+- Pi Authentication only
+
+---
+
+## 🔐 الخصوصية والالتزام | Privacy & Compliance
+
+- لا يتم جمع أي بيانات شخصية سوى **اسم مستخدم Pi**
 - لا يتم بيع أو مشاركة البيانات مع أي طرف ثالث
-- التطبيق تعليمي فقط ولا يقدم خدمات مالية مباشرة
-- جميع السياسات متوافقة مع إرشادات Pi Network
+- التطبيق **تعليمي فقط** ولا يقدم خدمات مالية مباشرة
+- جميع السياسات متوافقة مع إرشادات **Pi Network**
 
 ---
 
-## 🔗 الروابط / Links
+## 🔗 الروابط | Links
 
-### 🌐 فتح التطبيق عبر Pi Browser
-[Open App](https://skill-spark-hub-tawny.vercel.app)
+- 🌐 **التطبيق (Pi Browser)**  
+  https://skill-spark-hub-tawny.vercel.app
 
-### 📄 سياسة الخصوصية
-[Privacy Policy](https://skill-spark-hub-tawny.vercel.app/privacy-policy)
+- 📄 **سياسة الخصوصية**  
+  /privacy-policy.html
 
-### 📄 شروط الاستخدام
-[Terms of Service](https://skill-spark-hub-tawny.vercel.app/terms-of-service)
+- 📄 **شروط الاستخدام**  
+  /terms-of-service.html
 
 ---
 
