@@ -128,6 +128,7 @@
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
+/* ===== Pi Check ===== */
 let piReady = false;
 const piNotice = document.getElementById("piNotice");
 
@@ -146,20 +147,45 @@ const waitForPi = setInterval(() => {
   }
 }, 300);
 
-// زر ابدأ
+/* ===== زر ابدأ ===== */
 document.getElementById("startBtn").onclick = () => {
   document.getElementById("suggestionBox")
     .scrollIntoView({ behavior: "smooth" });
 };
 
-// تحميل البيانات
+/* ===== UX ذكي: حفظ الاهتمام ===== */
+function saveInterest(name) {
+  localStorage.setItem("interest", name);
+  showInterestNotice(name);
+}
+
+function showInterestNotice(name) {
+  let notice = document.getElementById("interestNotice");
+  if (!notice) {
+    notice = document.createElement("div");
+    notice.id = "interestNotice";
+    notice.className = "notice";
+    document.querySelector("header").appendChild(notice);
+  }
+  notice.innerText = `⭐ مهتم بـ ${name.replace(/_/g," ")}`;
+}
+
+/* ===== تحميل البيانات ===== */
 fetch("data.json")
   .then(res => res.json())
   .then(data => {
     const keys = Object.keys(data);
-    const random = keys[Math.floor(Math.random() * keys.length)];
+
+    // اقتراح ذكي (يعتمد على الاهتمام لو موجود)
+    const savedInterest = localStorage.getItem("interest");
+    const selected = savedInterest && data[savedInterest]
+      ? savedInterest
+      : keys[Math.floor(Math.random() * keys.length)];
+
     document.getElementById("suggestionBox").innerHTML =
-      `<strong>${random.replace(/_/g," ")}</strong><br>${data[random].الوصف}`;
+      `<strong>${selected.replace(/_/g," ")}</strong><br>${data[selected].الوصف}`;
+
+    if (savedInterest) showInterestNotice(savedInterest);
 
     const container = document.getElementById("sections");
     keys.forEach(name => {
@@ -175,13 +201,17 @@ fetch("data.json")
           <p>${s.الوصف || ""}</p>
           <div class="tags"></div>
         </div>`;
+
       const tags = div.querySelector(".tags");
       (Array.isArray(s.الفروع) ? s.الفروع : Object.keys(s.الفروع || {}))
         .forEach(t => tags.innerHTML += `<span class="tag">${t.replace(/_/g," ")}</span>`);
+
       div.onclick = () => {
+        saveInterest(name);
         const c = div.querySelector(".accordion-content");
         c.style.display = c.style.display === "block" ? "none" : "block";
       };
+
       container.appendChild(div);
     });
   });
