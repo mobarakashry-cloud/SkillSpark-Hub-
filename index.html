@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SkillSpark Hub</title>
 
-  <link rel="stylesheet" href="defaults.css">
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 
   <style>
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont;
+      font-family: system-ui;
       background: #f7f5fb;
       margin: 0;
     }
@@ -35,20 +34,7 @@
       margin-top: 12px;
     }
 
-    .btn:hover {
-      transform: scale(1.04);
-      transition: 0.2s;
-    }
-
-    .notice {
-      font-size: 12px;
-      opacity: 0.9;
-      margin-top: 6px;
-    }
-
-    .section {
-      padding: 20px 16px;
-    }
+    .section { padding: 20px 16px; }
 
     .card {
       background: white;
@@ -57,7 +43,22 @@
       margin-bottom: 14px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       font-size: 14px;
-      line-height: 1.6;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg,#6A1B9A,#8E24AA);
+      width: 0%;
+      transition: 0.4s;
     }
 
     .accordion {
@@ -72,7 +73,6 @@
     .accordion-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
     }
 
     .accordion-content {
@@ -85,7 +85,6 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 8px;
     }
 
     .tag {
@@ -94,7 +93,6 @@
       padding: 6px 12px;
       border-radius: 20px;
       font-size: 12px;
-      cursor: pointer;
     }
 
     footer {
@@ -102,12 +100,6 @@
       padding: 16px;
       font-size: 12px;
       opacity: 0.6;
-    }
-
-    .progress {
-      font-size: 13px;
-      margin-top: 6px;
-      color: #4A148C;
     }
   </style>
 </head>
@@ -117,27 +109,35 @@
 <header>
   <h1>📚 SkillSpark Hub</h1>
   <p>تعلم مهارة جديدة كل يوم داخل Pi Network</p>
-
-  <button id="startBtn" class="btn">🚀 ابدأ الآن</button>
-
-  <div class="notice">🔐 تسجيل الدخول اختياري – التطبيق تعليمي</div>
-  <div class="notice" id="piNotice">⏳ جاري التحقق من Pi Browser...</div>
+  <button class="btn" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">
+    🚀 ابدأ الآن
+  </button>
 </header>
 
 <!-- Dashboard -->
 <section class="section" id="dashboard">
   <h2>📊 لوحتك اليوم</h2>
-  <div class="card" id="dashboardMessage">جاري التحليل...</div>
-  <div class="card" id="nextStep">اقتراح قادم...</div>
+
+  <div class="card" id="dashboardMessage"></div>
+
+  <div class="card">
+    <strong>📈 تقدمك</strong>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div id="progressText" style="margin-top:6px;font-size:13px"></div>
+  </div>
+
+  <div class="card" id="nextStep"></div>
 </section>
 
+<!-- Suggestion -->
 <section class="section">
   <h2>🔮 مقترح لك اليوم</h2>
   <div class="card" id="suggestionBox">جاري التحميل...</div>
-  <button id="shareBtn" class="btn">📤 شارك SkillSpark Hub</button>
-  <div class="progress" id="progressBox"></div>
 </section>
 
+<!-- Sections -->
 <section class="section">
   <h2>📂 الأقسام التعليمية</h2>
   <div id="sections"></div>
@@ -146,155 +146,75 @@
 <footer>© 2025 SkillSpark Hub – Pi Network</footer>
 
 <script>
-/* ================= Pi Check ================= */
-let piReady = false;
-const piNotice = document.getElementById("piNotice");
-
-let attempts = 0;
-const waitForPi = setInterval(() => {
-  attempts++;
-  if (window.Pi) {
-    clearInterval(waitForPi);
-    Pi.init({ appName: "SkillSpark Hub", sandbox: false });
-    piReady = true;
-    piNotice.innerText = "✅ Pi Browser متصل";
-  }
-  if (attempts >= 10 && !piReady) {
-    clearInterval(waitForPi);
-    piNotice.innerText = "ℹ️ التصفح متاح بدون تسجيل";
-  }
-}, 300);
-
-/* ================= Start Button ================= */
-document.getElementById("startBtn").onclick = () => {
-  document.getElementById("dashboard")
-    .scrollIntoView({ behavior: "smooth" });
-};
-
-/* ================= Local Storage ================= */
-function saveInterest(name) {
-  localStorage.setItem("interest", name);
+function saveInterest(n){localStorage.setItem("interest",n)}
+function markVisited(n){
+  let v=JSON.parse(localStorage.getItem("visited")||"[]");
+  if(!v.includes(n)){v.push(n);localStorage.setItem("visited",JSON.stringify(v))}
 }
 
-function markVisited(name) {
-  let visited = JSON.parse(localStorage.getItem("visited") || "[]");
-  if (!visited.includes(name)) {
-    visited.push(name);
-    localStorage.setItem("visited", JSON.stringify(visited));
-  }
+function updateUI(total){
+  const visited=JSON.parse(localStorage.getItem("visited")||"[]");
+  const interest=localStorage.getItem("interest");
+
+  document.getElementById("dashboardMessage").innerText =
+    visited.length===0
+    ? "👋 ابدأ رحلتك باختيار أي قسم"
+    : `🔥 ممتاز! زرت ${visited.length} أقسام`;
+
+  document.getElementById("nextStep").innerText =
+    interest
+    ? `➡️ كمّل في مجال ${interest.replace(/_/g," ")}`
+    : "🌱 جرّب قسم جديد";
+
+  const percent = total ? Math.round((visited.length/total)*100) : 0;
+  document.getElementById("progressFill").style.width = percent+"%";
+  document.getElementById("progressText").innerText =
+    `${visited.length} / ${total} (${percent}%)`;
 }
 
-function updateProgress(total) {
-  const visited = JSON.parse(localStorage.getItem("visited") || "[]");
-  document.getElementById("progressBox").innerText =
-    `📊 تقدّمك: ${visited.length} / ${total} أقسام تمت زيارتها`;
-}
+fetch("data.json").then(r=>r.json()).then(data=>{
+  const keys=Object.keys(data);
+  const pick=localStorage.getItem("interest")||keys[Math.floor(Math.random()*keys.length)];
 
-/* ================= Dashboard Logic ================= */
-function updateDashboard(total) {
-  const visited = JSON.parse(localStorage.getItem("visited") || "[]");
-  const interest = localStorage.getItem("interest");
+  document.getElementById("suggestionBox").innerHTML =
+    `<strong>${pick.replace(/_/g," ")}</strong><br>${data[pick].الوصف||""}`;
 
-  const msgBox = document.getElementById("dashboardMessage");
-  const nextBox = document.getElementById("nextStep");
+  const container=document.getElementById("sections");
 
-  if (visited.length === 0) {
-    msgBox.innerText = "👋 أهلاً بيك! ابدأ باستكشاف أول قسم يعجبك.";
-    nextBox.innerText = "✨ نقترح عليك فتح أي قسم والضغط على أحد الفروع.";
-    return;
-  }
+  keys.forEach(k=>{
+    const d=data[k];
+    const acc=document.createElement("div");
+    acc.className="accordion";
 
-  msgBox.innerText = `🔥 ممتاز! زُرت ${visited.length} أقسام لحد دلوقتي.`;
+    acc.innerHTML=`
+      <div class="accordion-header">
+        <strong>${k.replace(/_/g," ")}</strong>
+        <span>⬇️</span>
+      </div>
+      <div class="accordion-content">
+        <p>${d.الوصف||""}</p>
+        <div class="tags"></div>
+      </div>
+    `;
 
-  if (interest) {
-    nextBox.innerText =
-      `➡️ الخطوة الجاية: كمّل في مجال "${interest.replace(/_/g," ")}" واختر فرع جديد.`;
-  } else {
-    nextBox.innerText = "🌱 جرّب قسم جديد مختلف لتوسيع مهاراتك.";
-  }
-}
+    acc.onclick=()=>{
+      saveInterest(k);
+      markVisited(k);
+      const c=acc.querySelector(".accordion-content");
+      const open=c.style.display==="block";
+      c.style.display=open?"none":"block";
+      updateUI(keys.length);
+    };
 
-/* ================= Share ================= */
-let currentSuggestion = "";
+    const tags=acc.querySelector(".tags");
+    (Array.isArray(d.الفروع)?d.الفروع:Object.keys(d.الفروع||{}))
+      .forEach(t=>tags.innerHTML+=`<span class="tag">${t.replace(/_/g," ")}</span>`);
 
-document.getElementById("shareBtn").onclick = () => {
-  const text = `📚 SkillSpark Hub
-تعلمت اليوم: ${currentSuggestion}
-🔗 جرّب التطبيق داخل Pi Browser`;
-
-  if (navigator.share) {
-    navigator.share({ text });
-  } else {
-    navigator.clipboard.writeText(text);
-    alert("تم نسخ النص، شاركه الآن ✨");
-  }
-};
-
-/* ================= Load Data ================= */
-fetch("data.json")
-  .then(res => res.json())
-  .then(data => {
-    const keys = Object.keys(data);
-
-    const savedInterest = localStorage.getItem("interest");
-    const selected = savedInterest && data[savedInterest]
-      ? savedInterest
-      : keys[Math.floor(Math.random() * keys.length)];
-
-    currentSuggestion = selected.replace(/_/g," ");
-
-    document.getElementById("suggestionBox").innerHTML =
-      `<strong>${currentSuggestion}</strong><br>${data[selected].الوصف || ""}`;
-
-    const container = document.getElementById("sections");
-
-    keys.forEach(name => {
-      const s = data[name];
-      const div = document.createElement("div");
-      div.className = "accordion";
-
-      div.innerHTML = `
-        <div class="accordion-header">
-          <strong>${name.replace(/_/g," ")}</strong>
-          <span>⬇️</span>
-        </div>
-        <div class="accordion-content">
-          <p>${s.الوصف || ""}</p>
-          <div class="tags"></div>
-        </div>
-      `;
-
-      const tags = div.querySelector(".tags");
-      (Array.isArray(s.الفروع) ? s.الفروع : Object.keys(s.الفروع || {}))
-        .forEach(t => {
-          const tag = document.createElement("span");
-          tag.className = "tag";
-          tag.innerText = t.replace(/_/g," ");
-          tag.onclick = (e) => e.stopPropagation();
-          tags.appendChild(tag);
-        });
-
-      div.onclick = () => {
-        saveInterest(name);
-        markVisited(name);
-
-        const c = div.querySelector(".accordion-content");
-        const arrow = div.querySelector("span");
-        const open = c.style.display === "block";
-
-        c.style.display = open ? "none" : "block";
-        arrow.innerText = open ? "⬇️" : "⬆️";
-
-        updateProgress(keys.length);
-        updateDashboard(keys.length);
-      };
-
-      container.appendChild(div);
-    });
-
-    updateProgress(keys.length);
-    updateDashboard(keys.length);
+    container.appendChild(acc);
   });
+
+  updateUI(keys.length);
+});
 </script>
 
 </body>
