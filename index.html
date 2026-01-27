@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SkillSpark Hub</title>
 
+<!-- Pi SDK -->
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script>
+  Pi.init({ version: "2.0", sandbox: false }); // sandbox: false => Mainnet
+</script>
+
 <style>
 body{font-family:system-ui;background:#f6f4fb;margin:0}
 header{background:linear-gradient(135deg,#4A148C,#6A1B9A);color:#fff;text-align:center;padding:25px;border-radius:0 0 20px 20px}
@@ -55,15 +61,30 @@ footer{text-align:center;font-size:12px;opacity:.6;padding:12px}
 
 <footer>© 2025 SkillSpark Hub – Pi Ready</footer>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
-let role=localStorage.getItem("role");
+// ---------- Pi Authentication ----------
+const scopes = ['payments','username'];
+let userAuthToken = "";
 
-const sectionsData={
-  "اللغات":[],
-  "العلوم":[],
-  "التكنولوجيا":[]
-};
+function onIncompletePaymentFound(payment) { 
+    console.log('incomplete payment found', payment);
+    completePayment(payment.identifier, payment.transaction.txid);
+}
 
+Pi.authenticate(scopes, onIncompletePaymentFound).then(function(auth) {
+  console.log("مرحبا! أنت جاهز للدفع والمصادقة على Pi!");
+  userAuthToken = auth.accessToken;
+}).catch(function(error) {
+  console.error(error);
+});
+
+// ---------- بيانات التطبيق ----------
+let role = localStorage.getItem("role");
+const sectionsData = { "اللغات":[], "العلوم":[], "التكنولوجيا":[] };
+
+// ---------- التعامل مع الدور ----------
 function initRole(){
   const box=document.getElementById("roleBox");
   if(role){
@@ -78,38 +99,48 @@ function initRole(){
     <button class="btn" onclick="setRole('معلم')">👨‍🏫 معلّم</button>
   </div>`;
 }
+function setRole(r){ role=r; localStorage.setItem("role",r); initRole(); }
 
-function setRole(r){
-  role=r;
-  localStorage.setItem("role",r);
-  initRole();
-}
-
-function aiExplain(text){
-  return `🤖 شرح مبسّط:<br>${text}<br>✅ تمرين عملي + تطبيق مباشر`;
-}
-
+// ---------- إضافة الدروس ----------
+function aiExplain(text){ return `🤖 شرح مبسّط:<br>${text}<br>✅ تمرين عملي + تطبيق مباشر`; }
 function addLesson(){
-  const s=lessonSection.value;
-  const t=lessonTitle.value;
-  const d=lessonDesc.value;
+  const s=lessonSection.value, t=lessonTitle.value, d=lessonDesc.value;
   if(!t||!d) return alert("أكمل البيانات");
-  sectionsData[s].push({
-    t,d,
-    v:lessonVideo.value,
-    i:lessonImage.value,
-    rate:0,flag:0,hidden:false
-  });
-  save();render();
+  sectionsData[s].push({ t,d,v:lessonVideo.value,i:lessonImage.value,rate:0,flag:0,hidden:false, price:1 }); // price = 1 Pi
+  save(); render();
   lessonTitle.value=lessonDesc.value=lessonVideo.value=lessonImage.value="";
 }
-
 function rateLesson(ls,val){ls.rate=val;save();render();}
 function flagLesson(ls){ls.flag++;if(ls.flag>=3)ls.hidden=true;save();render();}
-
 function save(){localStorage.setItem("lessons",JSON.stringify(sectionsData));}
 function load(){Object.assign(sectionsData,JSON.parse(localStorage.getItem("lessons")||"{}"));}
 
+// ---------- الدفع ----------
+async function payLesson(ls){
+  if(!userAuthToken){ alert("انتظر المصادقة أولاً!"); return; }
+  const paymentData = { amount: ls.price, memo: `شراء درس: ${ls.t}`, metadata:{} };
+  const paymentCallbacks = {
+    onReadyForServerApproval: async (paymentId)=>{
+      console.log("Server Approval", paymentId);
+      await axios.post('/payments/approve',{ paymentId }, { headers:{ Authorization: `Bearer ${userAuthToken}` } });
+    },
+    onReadyForServerCompletion: async (paymentId, txid)=>{
+      console.log("Server Completion", paymentId, txid);
+      await axios.post('/payments/complete',{ paymentId, txid }, { headers:{ Authorization: `Bearer ${userAuthToken}` } });
+      alert(`تم شراء الدرس: ${ls.t} بنجاح ✅`);
+    },
+    onCancel: ()=>{ alert("تم إلغاء الدفع"); },
+    onError: (err)=>{ console.error("Payment Error", err); alert("حدث خطأ في الدفع"); }
+  };
+  Pi.createPayment(paymentData, paymentCallbacks).then(p=>console.log("Payment started", p)).catch(e=>console.error(e));
+}
+
+function completePayment(paymentId, txid){
+  // هنا تقدر تربطه بالباك اند
+  console.log("Payment Complete:", paymentId, txid);
+}
+
+// ---------- عرض الأقسام ----------
 function render(){
   const c=document.getElementById("sections");
   c.innerHTML="";
@@ -136,6 +167,7 @@ function render(){
         <span onclick="rateLesson(ls,4)">4</span>
         <span onclick="rateLesson(ls,5)">5</span>
         🚩 <span onclick="flagLesson(ls)">إبلاغ</span>
+        💰 <button class="btn" onclick="payLesson(ls)">شراء بـ Pi</button>
       </div>`;
       cont.appendChild(d);
     });
