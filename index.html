@@ -11,56 +11,43 @@
   Pi.init({ version: "2.0", sandbox: false }); // sandbox: false => Mainnet
 </script>
 
-<style>
-body{font-family:system-ui;background:#f6f4fb;margin:0}
-header{background:linear-gradient(135deg,#4A148C,#6A1B9A);color:#fff;text-align:center;padding:25px;border-radius:0 0 20px 20px}
-.section{padding:16px}
-.card{background:#fff;padding:14px;border-radius:16px;margin-bottom:12px;box-shadow:0 4px 10px rgba(0,0,0,.05)}
-.btn{background:#4A148C;color:#fff;border:none;padding:12px 18px;border-radius:22px;cursor:pointer;margin:4px}
-.accordion{background:#fff;border-radius:16px;padding:14px;margin-bottom:10px}
-.accordion-header{display:flex;justify-content:space-between;cursor:pointer}
-.accordion-content{display:none;margin-top:10px}
-.lesson{background:#ede7f6;padding:10px;border-radius:12px;margin-top:8px;font-size:13px}
-input,textarea,select{width:100%;padding:10px;margin:6px 0;border-radius:10px;border:1px solid #ccc}
-.ai-box{background:#f3e5f5;padding:12px;border-radius:14px;margin-top:8px}
-.rate span{cursor:pointer;font-size:16px;margin:0 2px}
-img{max-width:100%;border-radius:10px;margin-top:6px}
-footer{text-align:center;font-size:12px;opacity:.6;padding:12px}
-</style>
-</head>
+<!-- ربط ملف CSS -->
+<link rel="stylesheet" href="defaults.css">
 
+</head>
 <body>
 
 <header>
-<h1>📚 SkillSpark Hub</h1>
-<p>تعلم – شارك – طوّر مهارتك</p>
+  <h1>📚 SkillSpark Hub</h1>
+  <p>تعلم – شارك – طوّر مهارتك</p>
 </header>
 
 <section class="section" id="roleBox"></section>
 
 <section class="section" id="addBox" style="display:none">
-<div class="card">
-<h3>➕ إضافة درس (للمعلّمين)</h3>
-<select id="lessonSection">
-<option>اللغات</option>
-<option>العلوم</option>
-<option>التكنولوجيا</option>
-</select>
-<input id="lessonTitle" placeholder="عنوان الدرس">
-<input id="lessonVideo" placeholder="رابط فيديو (YouTube)">
-<input id="lessonImage" placeholder="رابط صورة">
-<textarea id="lessonDesc" placeholder="شرح مختصر"></textarea>
-<button class="btn" onclick="addLesson()">نشر الدرس</button>
-</div>
+  <div class="card">
+    <h3>➕ إضافة درس (للمعلّمين)</h3>
+    <select id="lessonSection">
+      <option>اللغات</option>
+      <option>العلوم</option>
+      <option>التكنولوجيا</option>
+    </select>
+    <input id="lessonTitle" placeholder="عنوان الدرس">
+    <input id="lessonVideo" placeholder="رابط فيديو (YouTube)">
+    <input id="lessonImage" placeholder="رابط صورة">
+    <textarea id="lessonDesc" placeholder="شرح مختصر"></textarea>
+    <button class="btn" onclick="addLesson()">نشر الدرس</button>
+  </div>
 </section>
 
 <section class="section">
-<h3>📂 الأقسام التعليمية</h3>
-<div id="sections"></div>
+  <h3>📂 الأقسام التعليمية</h3>
+  <div id="sections"></div>
 </section>
 
 <footer>© 2025 SkillSpark Hub – Pi Ready</footer>
 
+<!-- Axios -->
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <script>
@@ -136,7 +123,6 @@ async function payLesson(ls){
 }
 
 function completePayment(paymentId, txid){
-  // هنا تقدر تربطه بالباك اند
   console.log("Payment Complete:", paymentId, txid);
 }
 
